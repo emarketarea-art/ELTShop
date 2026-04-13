@@ -38,7 +38,7 @@
     "prix": 35000,
     "devise": "FCFA",
     "description": "Veste structurée, finitions impeccables, style business-casual.",
-    "image": "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&q=80",
+    "image": "https://images.unsplash.com/photo-1718252540511-e958742e4165?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "tailles": ["S", "M", "L", "XL"],
     "couleurs": ["Camel", "Noir", "Gris"],
     "categorie": "Vestes"
