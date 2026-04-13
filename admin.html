@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMS Admin — Maison Élite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --fond:    #F7F3EE;
+      --blanc:   #FFFFFF;
+      --texte:   #1A1410;
+      --texte-2: #7A6A5A;
+      --or:      #B5893F;
+      --pierre:  #E8DDD2;
+      --nav:     #140F0A;
+      --vert:    #27AE60;
+      --rouge:   #C0392B;
+      --bleu:    #2980B9;
+      --rayon:   10px;
+      --ombre:   0 2px 16px rgba(26,20,10,.08);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--fond);color:var(--texte);min-height:100vh}
+
+    /* ── LOGIN ── */
+    .login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:var(--nav)}
+    .login-box{background:var(--blanc);border-radius:20px;padding:48px 40px;width:min(400px,100%);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+    .login-logo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--or);letter-spacing:4px;text-transform:uppercase;margin-bottom:8px}
+    .login-box h2{font-size:1rem;color:var(--texte-2);font-weight:400;margin-bottom:32px}
+    .login-input{width:100%;padding:12px 16px;border:1.5px solid var(--pierre);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;margin-bottom:14px}
+    .login-input:focus{border-color:var(--or)}
+    .login-btn{width:100%;padding:13px;background:var(--or);color:var(--nav);border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:background .25s}
+    .login-btn:hover{background:#C9A54F}
+    .login-erreur{color:var(--rouge);font-size:.82rem;margin-top:12px;display:none}
+    .login-erreur.visible{display:block}
+
+    /* ── LAYOUT ADMIN ── */
+    .admin-page{display:none}
+    .admin-page.visible{display:block}
+
+    .topbar{background:var(--nav);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4%,40px);position:sticky;top:0;z-index:100}
+    .topbar-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--or);letter-spacing:3px;text-decoration:none}
+    .topbar-droite{display:flex;align-items:center;gap:10px}
+    .topbar-btn{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:7px 16px;border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+    .topbar-btn:hover{border-color:var(--or);color:var(--or)}
+    .topbar-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+    .admin-main{max-width:1100px;margin:0 auto;padding:36px clamp(16px,4%,40px)}
+
+    /* ── STATS ── */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:32px}
+    .stat-card{background:var(--blanc);border-radius:var(--rayon);padding:20px 22px;box-shadow:var(--ombre)}
+    .stat-label{font-size:.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--texte-2);margin-bottom:8px}
+    .stat-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--texte)}
+    .stat-val span{font-size:1rem;color:var(--or)}
+
+    /* ── BARRE ACTIONS ── */
+    .actions-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+    .btn-ajouter{background:var(--or);color:var(--nav);padding:10px 22px;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.5px;cursor:pointer;transition:background .25s;display:flex;align-items:center;gap:7px}
+    .btn-ajouter:hover{background:#C9A54F}
+    .btn-ajouter svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
+    .btn-import,.btn-export{background:transparent;border:1.5px solid var(--pierre);color:var(--texte);padding:9px 18px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+    .btn-import:hover{border-color:var(--bleu);color:var(--bleu)}
+    .btn-export:hover{border-color:var(--vert);color:var(--vert)}
+    .btn-import svg,.btn-export svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+    .recherche-admin{margin-left:auto;padding:9px 14px;border:1.5px solid var(--pierre);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;outline:none;min-width:200px;transition:border-color .2s}
+    .recherche-admin:focus{border-color:var(--or)}
+
+    /* ── TABLEAU ── */
+    .table-wrap{background:var(--blanc);border-radius:14px;box-shadow:var(--ombre);overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    thead{background:#FAF7F3}
+    th{padding:14px 16px;text-align:left;font-size:.7rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--texte-2);white-space:nowrap}
+    td{padding:14px 16px;border-top:1px solid var(--pierre);vertical-align:middle}
+    tr:hover td{background:#FDFAF7}
+
+    .td-image{width:60px}
+    .td-image img{width:52px;height:52px;object-fit:cover;border-radius:8px;background:var(--pierre)}
+    .td-nom{font-weight:500;font-size:.92rem}
+    .td-cat{font-size:.72rem;background:#F0EBE3;padding:3px 10px;border-radius:100px;color:var(--texte-2);white-space:nowrap}
+    .td-prix{font-weight:600;color:var(--or);white-space:nowrap}
+    .td-tags{display:flex;flex-wrap:wrap;gap:4px;max-width:180px}
+    .tag{font-size:.68rem;border:1px solid var(--pierre);padding:2px 7px;border-radius:4px;color:var(--texte-2);white-space:nowrap}
+
+    .btn-edit,.btn-del{background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;font-weight:500;transition:background .2s;display:inline-flex;align-items:center;gap:5px}
+    .btn-edit{color:var(--bleu)}
+    .btn-edit:hover{background:rgba(41,128,185,.08)}
+    .btn-del{color:var(--rouge)}
+    .btn-del:hover{background:rgba(192,57,43,.08)}
+    .btn-edit svg,.btn-del svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+    @media(max-width:768px){
+      .col-tailles,.col-couleurs{display:none}
+    }
+
+    /* ── MODAL FORMULAIRE ── */
+    .form-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(20,15,10,.6);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0}
+    .form-overlay.ouverte{display:flex}
+    @media(min-width:640px){.form-overlay.ouverte{align-items:center;padding:20px}}
+
+    .form-modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:95vh;overflow-y:auto;animation:slideUp .4s cubic-bezier(0.16,1,0.3,1)}
+    @media(min-width:640px){.form-modal{border-radius:20px;animation:fadeInUp .35s cubic-bezier(0.16,1,0.3,1)}}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+    .form-header{display:flex;align-items:center;justify-content:space-between;padding:24px 28px 0}
+    .form-titre{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600}
+    .btn-form-fermer{background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--texte-2);padding:4px;line-height:1}
+
+    .form-corps{padding:24px 28px 28px;display:flex;flex-direction:column;gap:18px}
+
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:480px){.form-group-row{grid-template-columns:1fr}}
+
+    .form-label{font-size:.75rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--texte-2)}
+    .form-input,.form-select,.form-textarea{padding:11px 14px;border:1.5px solid var(--pierre);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;background:#fff;color:var(--texte)}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--or)}
+    .form-textarea{resize:vertical;min-height:80px}
+
+    /* Aperçu image */
+    .apercu-image{width:100%;height:140px;object-fit:cover;border-radius:8px;border:1.5px solid var(--pierre);display:none}
+    .apercu-image.visible{display:block}
+
+    /* Tags (tailles / couleurs) */
+    .tags-input-wrap{display:flex;flex-wrap:wrap;gap:7px;padding:10px;border:1.5px solid var(--pierre);border-radius:8px;min-height:48px;cursor:text;transition:border-color .2s;align-items:center}
+    .tags-input-wrap:focus-within{border-color:var(--or)}
+    .tag-chip{background:var(--fond);border:1px solid var(--pierre);padding:3px 10px;border-radius:100px;font-size:.78rem;display:inline-flex;align-items:center;gap:5px}
+    .tag-chip button{background:none;border:none;cursor:pointer;color:var(--texte-2);font-size:.8rem;line-height:1;padding:0;transition:color .15s}
+    .tag-chip button:hover{color:var(--rouge)}
+    .tags-input{border:none;outline:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;flex:1;min-width:80px;background:transparent}
+
+    .hint{font-size:.72rem;color:var(--texte-2);margin-top:-4px}
+
+    .form-footer{display:flex;gap:10px;justify-content:flex-end;padding-top:6px;border-top:1px solid var(--pierre)}
+    .btn-annuler{background:transparent;border:1.5px solid var(--pierre);color:var(--texte);padding:11px 22px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;cursor:pointer;transition:all .2s}
+    .btn-annuler:hover{border-color:var(--texte)}
+    .btn-sauver{background:var(--or);color:var(--nav);padding:11px 28px;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:background .25s}
+    .btn-sauver:hover{background:#C9A54F}
+
+    /* Toast notification */
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--nav);color:#fff;padding:12px 24px;border-radius:100px;font-size:.85rem;z-index:1000;transition:transform .4s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;border:1px solid rgba(181,137,63,.3)}
+    .toast.visible{transform:translateX(-50%) translateY(0)}
+
+    .vide{text-align:center;padding:60px 20px;color:var(--texte-2)}
+    .vide p:first-child{font-size:2.5rem;margin-bottom:10px}
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       PAGE DE CONNEXION
+  ====================================================== -->
+  <div class="login-page" id="login-page">
+    <div class="login-box">
+      <div class="login-logo">Maison Élite</div>
+      <h2>Panneau d'administration CMS</h2>
+      <input class="login-input" type="password" id="login-pwd" placeholder="Mot de passe admin" onkeydown="if(event.key==='Enter')seConnecter()" />
+      <button class="login-btn" onclick="seConnecter()">Accéder →</button>
+      <p class="login-erreur" id="login-erreur">Mot de passe incorrect</p>
+      <p style="margin-top:20px;font-size:.75rem;color:#ccc">
+        Mot de passe par défaut : <strong>elite2025</strong><br>
+        <span style="color:#aaa">Modifiez-le dans le code (ADMIN_MOT_DE_PASSE)</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       PAGE ADMIN
+  ====================================================== -->
+  <div class="admin-page" id="admin-page">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <a href="index.html" class="topbar-logo">Maison Élite</a>
+      <div class="topbar-droite">
+        <a href="index.html" class="topbar-btn" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Voir le site
+        </a>
+        <button class="topbar-btn" onclick="seDeconnecter()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Déconnexion
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-main">
+
+      <!-- Stats -->
+      <div class="stats-grid" id="stats-grid"></div>
+
+      <!-- Actions -->
+      <div class="actions-bar">
+        <button class="btn-ajouter" onclick="ouvrirFormulaire()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Ajouter un article
+        </button>
+
+        <button class="btn-export" onclick="exporterJSON()">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exporter JSON
+        </button>
+
+        <label class="btn-import" style="cursor:pointer">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Importer JSON
+          <input type="file" accept=".json" onchange="importerJSON(event)" style="display:none" />
+        </label>
+
+        <input class="recherche-admin" type="text" placeholder="Rechercher…" oninput="rechercherAdmin(this.value)" />
+      </div>
+
+      <!-- Tableau produits -->
+      <div class="table-wrap" id="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:70px">Image</th>
+              <th>Nom</th>
+              <th>Catégorie</th>
+              <th>Prix</th>
+              <th class="col-tailles">Tailles</th>
+              <th class="col-couleurs">Couleurs</th>
+              <th style="width:110px;text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="vide" id="vide" style="display:none">
+          <p>📦</p>
+          <p>Aucun article trouvé</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =====================================================
+       FORMULAIRE AJOUT / MODIFICATION
+  ====================================================== -->
+  <div class="form-overlay" id="form-overlay" onclick="fermerSiOverlay(event)">
+    <div class="form-modal" id="form-modal">
+      <div class="form-header">
+        <h2 class="form-titre" id="form-titre">Ajouter un article</h2>
+        <button class="btn-form-fermer" onclick="fermerFormulaire()">✕</button>
+      </div>
+
+      <div class="form-corps">
+
+        <!-- Aperçu image -->
+        <img id="apercu-img" class="apercu-image" src="" alt="Aperçu" />
+
+        <div class="form-group-row">
+          <!-- Nom -->
+          <div class="form-group">
+            <label class="form-label">Nom de l'article *</label>
+            <input class="form-input" type="text" id="f-nom" placeholder="Ex : Robe Élégance" required />
+          </div>
+          <!-- Catégorie -->
+          <div class="form-group">
+            <label class="form-label">Catégorie *</label>
+            <input class="form-input" type="text" id="f-cat" placeholder="Ex : Robes, Hauts, Bas…" required list="cats-list" />
+            <datalist id="cats-list"></datalist>
+          </div>
+        </div>
+
+        <div class="form-group-row">
+          <!-- Prix -->
+          <div class="form-group">
+            <label class="form-label">Prix *</label>
+            <input class="form-input" type="number" id="f-prix" placeholder="Ex : 25000" required min="0" />
+          </div>
+          <!-- Devise -->
+          <div class="form-group">
+            <label class="form-label">Devise</label>
+            <select class="form-select" id="f-devise">
+              <option>FCFA</option><option>EUR</option><option>USD</option><option>XOF</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="f-desc" placeholder="Description courte et accrocheuse de l'article…"></textarea>
+        </div>
+
+        <!-- URL Image -->
+        <div class="form-group">
+          <label class="form-label">URL de l'image *</label>
+          <input class="form-input" type="url" id="f-img" placeholder="https://…" oninput="previsualiserImage(this.value)" />
+          <p class="hint">Astuce : utilisez <a href="https://unsplash.com" target="_blank" style="color:var(--or)">unsplash.com</a> pour des images gratuites</p>
+        </div>
+
+        <!-- Tailles -->
+        <div class="form-group">
+          <label class="form-label">Tailles disponibles</label>
+          <div class="tags-input-wrap" id="tailles-wrap" onclick="document.getElementById('tailles-input').focus()">
+            <input class="tags-input" id="tailles-input" placeholder="Tapez XS, S, M… puis Entrée" onkeydown="ajouterTag(event,'tailles')" />
+          </div>
+          <p class="hint">Appuyez sur Entrée ou virgule après chaque taille</p>
+        </div>
+
+        <!-- Couleurs -->
+        <div class="form-group">
+          <label class="form-label">Couleurs disponibles</label>
+          <div class="tags-input-wrap" id="couleurs-wrap" onclick="document.getElementById('couleurs-input').focus()">
+            <input class="tags-input" id="couleurs-input" placeholder="Tapez Noir, Blanc… puis Entrée" onkeydown="ajouterTag(event,'couleurs')" />
+          </div>
+          <p class="hint">Appuyez sur Entrée ou virgule après chaque couleur</p>
+        </div>
+
+        <div class="form-footer">
+          <button class="btn-annuler" onclick="fermerFormulaire()">Annuler</button>
+          <button class="btn-sauver" onclick="sauvegarderProduit()">💾 Sauvegarder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Input fichier caché (import) -->
+
+  <script>
+    /* =====================================================
+       ⚙️ CONFIGURATION ADMIN
+       !! Changez ce mot de passe !!
+    ===================================================== */
+    const ADMIN_MOT_DE_PASSE = "elite2025";
+    const CLE_STORAGE        = "elite_produits";
+
+    /* =====================================================
+       ÉTAT
+    ===================================================== */
+    let produits        = [];
+    let produitEnEdition = null; // null = ajout, id = modification
+    let taillesEnCours  = [];
+    let couleursEnCours = [];
+    let termeRecherche  = '';
+
+    /* =====================================================
+       CONNEXION / DÉCONNEXION
+    ===================================================== */
+    function seConnecter() {
+      const pwd = document.getElementById('login-pwd').value;
+      if (pwd === ADMIN_MOT_DE_PASSE) {
+        sessionStorage.setItem('elite_admin', 'ok');
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('admin-page').classList.add('visible');
+        chargerDonnees();
+      } else {
+        document.getElementById('login-erreur').classList.add('visible');
+        document.getElementById('login-pwd').focus();
+      }
+    }
+
+    function seDeconnecter() {
+      sessionStorage.removeItem('elite_admin');
+      location.reload();
+    }
+
+    // Vérifier si déjà connecté
+    if (sessionStorage.getItem('elite_admin') === 'ok') {
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('admin-page').classList.add('visible');
+    }
+
+    /* =====================================================
+       CHARGEMENT DES DONNÉES
+    ===================================================== */
+    async function chargerDonnees() {
+      const stockage = localStorage.getItem(CLE_STORAGE);
+      if (stockage) {
+        produits = JSON.parse(stockage);
+      } else {
+        // Charger depuis products.json si localStorage vide
+        try {
+          const rep = await fetch('./products.json');
+          produits = await rep.json();
+        } catch {
+          produits = [];
+        }
+      }
+      rendrePage();
+    }
+
+    /* =====================================================
+       SAUVEGARDE DANS LOCALSTORAGE
+    ===================================================== */
+    function sauvegarderDonnees() {
+      localStorage.setItem(CLE_STORAGE, JSON.stringify(produits));
+    }
+
+    /* =====================================================
+       AFFICHAGE DU TABLEAU
+    ===================================================== */
+    function rendrePage() {
+      mettreAJourStats();
+      rendrTableau();
+      remplirDatalistCats();
+    }
+
+    function mettreAJourStats() {
+      const cats     = [...new Set(produits.map(p => p.categorie))];
+      const valTot   = produits.reduce((s, p) => s + p.prix, 0);
+      const prixMoy  = produits.length ? Math.round(valTot / produits.length) : 0;
+
+      document.getElementById('stats-grid').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">Articles</div>
+          <div class="stat-val">${produits.length}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Catégories</div>
+          <div class="stat-val">${cats.length}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Prix moyen</div>
+          <div class="stat-val">${prixMoy.toLocaleString('fr-FR')} <span>FCFA</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Valeur totale</div>
+          <div class="stat-val">${valTot.toLocaleString('fr-FR')} <span>FCFA</span></div>
+        </div>
+      `;
+    }
+
+    function rendrTableau() {
+      const terme = termeRecherche.toLowerCase();
+      const filtres = terme
+        ? produits.filter(p =>
+            p.nom.toLowerCase().includes(terme) ||
+            p.categorie.toLowerCase().includes(terme) ||
+            p.description?.toLowerCase().includes(terme)
+          )
+        : produits;
+
+      const tbody = document.getElementById('tbody');
+      const vide  = document.getElementById('vide');
+
+      if (!filtres.length) {
+        tbody.innerHTML = '';
+        vide.style.display = 'block';
+        return;
+      }
+      vide.style.display = 'none';
+
+      tbody.innerHTML = filtres.map(p => `
+        <tr data-id="${p.id}">
+          <td class="td-image">
+            <img src="${p.image}" alt="${p.nom}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2252%22><rect width=%2252%22 height=%2252%22 fill=%22%23F0EBE3%22/></svg>'" />
+          </td>
+          <td class="td-nom">${p.nom}</td>
+          <td><span class="td-cat">${p.categorie}</span></td>
+          <td class="td-prix">${p.prix.toLocaleString('fr-FR')} ${p.devise}</td>
+          <td class="col-tailles">
+            <div class="td-tags">${p.tailles.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          </td>
+          <td class="col-couleurs">
+            <div class="td-tags">${p.couleurs.map(c=>`<span class="tag">${c}</span>`).join('')}</div>
+          </td>
+          <td style="text-align:right">
+            <button class="btn-edit" onclick="modifierProduit(${p.id})">
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Modifier
+            </button>
+            <button class="btn-del" onclick="supprimerProduit(${p.id})">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function remplirDatalistCats() {
+      const cats = [...new Set(produits.map(p => p.categorie))];
+      document.getElementById('cats-list').innerHTML =
+        cats.map(c => `<option value="${c}">`).join('');
+    }
+
+    function rechercherAdmin(val) {
+      termeRecherche = val;
+      rendrTableau();
+    }
+
+    /* =====================================================
+       FORMULAIRE — OUVRIR
+    ===================================================== */
+    function ouvrirFormulaire(p = null) {
+      produitEnEdition = p ? p.id : null;
+      taillesEnCours   = p ? [...p.tailles]  : [];
+      couleursEnCours  = p ? [...p.couleurs] : [];
+
+      document.getElementById('form-titre').textContent = p ? 'Modifier l\'article' : 'Ajouter un article';
+      document.getElementById('f-nom').value   = p?.nom        || '';
+      document.getElementById('f-cat').value   = p?.categorie  || '';
+      document.getElementById('f-prix').value  = p?.prix       || '';
+      document.getElementById('f-devise').value= p?.devise     || 'FCFA';
+      document.getElementById('f-desc').value  = p?.description|| '';
+      document.getElementById('f-img').value   = p?.image      || '';
+
+      previsualiserImage(p?.image || '');
+      rendreTags('tailles');
+      rendreTags('couleurs');
+
+      document.getElementById('form-overlay').classList.add('ouverte');
+    }
+
+    function modifierProduit(id) {
+      const p = produits.find(x => x.id === id);
+      if (p) ouvrirFormulaire(p);
+    }
+
+    function fermerFormulaire() {
+      document.getElementById('form-overlay').classList.remove('ouverte');
+      produitEnEdition = null;
+    }
+
+    function fermerSiOverlay(e) {
+      if (e.target === document.getElementById('form-overlay')) fermerFormulaire();
+    }
+
+    /* =====================================================
+       APERÇU IMAGE
+    ===================================================== */
+    function previsualiserImage(url) {
+      const img = document.getElementById('apercu-img');
+      if (url && url.startsWith('http')) {
+        img.src = url;
+        img.classList.add('visible');
+      } else {
+        img.classList.remove('visible');
+      }
+    }
+
+    /* =====================================================
+       GESTION DES TAGS (tailles / couleurs)
+    ===================================================== */
+    function ajouterTag(event, type) {
+      if (event.key !== 'Enter' && event.key !== ',') return;
+      event.preventDefault();
+      const input = document.getElementById(`${type}-input`);
+      const val   = input.value.trim().replace(/,$/, '');
+      if (!val) return;
+
+      const arr = type === 'tailles' ? taillesEnCours : couleursEnCours;
+      if (!arr.includes(val)) {
+        arr.push(val);
+        rendreTags(type);
+      }
+      input.value = '';
+    }
+
+    function supprimerTag(type, val) {
+      if (type === 'tailles')  taillesEnCours  = taillesEnCours.filter(t => t !== val);
+      else                     couleursEnCours = couleursEnCours.filter(c => c !== val);
+      rendreTags(type);
+    }
+
+    function rendreTags(type) {
+      const arr  = type === 'tailles' ? taillesEnCours : couleursEnCours;
+      const wrap = document.getElementById(`${type}-wrap`);
+      const input = document.getElementById(`${type}-input`);
+      wrap.innerHTML = '';
+      arr.forEach(v => {
+        const chip = document.createElement('span');
+        chip.className = 'tag-chip';
+        chip.innerHTML = `${v}<button onclick="supprimerTag('${type}','${v}')" type="button">×</button>`;
+        wrap.appendChild(chip);
+      });
+      wrap.appendChild(input);
+    }
+
+    /* =====================================================
+       SAUVEGARDER UN PRODUIT
+    ===================================================== */
+    function sauvegarderProduit() {
+      const nom   = document.getElementById('f-nom').value.trim();
+      const cat   = document.getElementById('f-cat').value.trim();
+      const prix  = parseFloat(document.getElementById('f-prix').value);
+      const devise= document.getElementById('f-devise').value;
+      const desc  = document.getElementById('f-desc').value.trim();
+      const img   = document.getElementById('f-img').value.trim();
+
+      // Validation
+      if (!nom || !cat || isNaN(prix) || !img) {
+        afficherToast('⚠️ Veuillez remplir tous les champs obligatoires (*)', 'erreur');
+        return;
+      }
+
+      if (produitEnEdition !== null) {
+        // Modification
+        const idx = produits.findIndex(p => p.id === produitEnEdition);
+        produits[idx] = { ...produits[idx], nom, categorie:cat, prix, devise, description:desc, image:img, tailles:taillesEnCours, couleurs:couleursEnCours };
+        afficherToast('✅ Article modifié avec succès');
+      } else {
+        // Ajout
+        const nouvelId = Math.max(0, ...produits.map(p => p.id)) + 1;
+        produits.push({ id:nouvelId, nom, categorie:cat, prix, devise, description:desc, image:img, tailles:taillesEnCours, couleurs:couleursEnCours });
+        afficherToast('✅ Article ajouté avec succès');
+      }
+
+      sauvegarderDonnees();
+      fermerFormulaire();
+      rendrePage();
+    }
+
+    /* =====================================================
+       SUPPRIMER UN PRODUIT
+    ===================================================== */
+    function supprimerProduit(id) {
+      const p = produits.find(x => x.id === id);
+      if (!confirm(`Supprimer "${p?.nom}" ? Cette action est irréversible.`)) return;
+      produits = produits.filter(x => x.id !== id);
+      sauvegarderDonnees();
+      rendrePage();
+      afficherToast('🗑️ Article supprimé');
+    }
+
+    /* =====================================================
+       EXPORT / IMPORT JSON
+    ===================================================== */
+    function exporterJSON() {
+      const blob = new Blob([JSON.stringify(produits, null, 2)], { type: 'application/json' });
+      const lien = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = lien;
+      a.download = `maison-elite-produits-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(lien);
+      afficherToast('📥 Fichier JSON exporté');
+    }
+
+    function importerJSON(event) {
+      const fichier = event.target.files[0];
+      if (!fichier) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!Array.isArray(data)) throw new Error('Format invalide');
+          if (!confirm(`Importer ${data.length} article(s) ? Cela remplacera les données actuelles.`)) return;
+          produits = data;
+          sauvegarderDonnees();
+          rendrePage();
+          afficherToast(`✅ ${data.length} articles importés`);
+        } catch {
+          afficherToast('❌ Fichier JSON invalide', 'erreur');
+        }
+      };
+      reader.readAsText(fichier);
+      event.target.value = ''; // Reset input
+    }
+
+    /* =====================================================
+       TOAST NOTIFICATION
+    ===================================================== */
+    function afficherToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('visible');
+      setTimeout(() => t.classList.remove('visible'), 3000);
+    }
+
+    /* =====================================================
+       TOUCHE ÉCHAP
+    ===================================================== */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') fermerFormulaire();
+    });
+
+    /* =====================================================
+       DÉMARRAGE (si déjà connecté)
+    ===================================================== */
+    if (sessionStorage.getItem('elite_admin') === 'ok') chargerDonnees();
+  </script>
+</body>
+</html>
