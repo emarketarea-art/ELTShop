@@ -27,7 +27,7 @@
     "prix": 18000,
     "devise": "FCFA",
     "description": "Pantalon taille haute, coupe droite et raffinée.",
-    "image": "https://images.unsplash.com/photo-h6PKsr0wDH4?w=600&q=80",
+    "image": "https://images.unsplash.com/photo-1718252540511-e958742e4165?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "tailles": ["S", "M", "L", "XL"],
     "couleurs": ["Noir", "Kaki", "Bleu Marine"],
     "categorie": "Bas"
@@ -38,7 +38,7 @@
     "prix": 35000,
     "devise": "FCFA",
     "description": "Veste structurée, finitions impeccables, style business-casual.",
-    "image": "https://images.unsplash.com/photo-1718252540511-e958742e4165?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "image": "https://images.unsplash.com/photo-1727515546577-f7d82a47b51d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHZlc3RlfGVufDB8fDB8fHww",
     "tailles": ["S", "M", "L", "XL"],
     "couleurs": ["Camel", "Noir", "Gris"],
     "categorie": "Vestes"
