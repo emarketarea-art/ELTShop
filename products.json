@@ -27,7 +27,7 @@
     "prix": 18000,
     "devise": "FCFA",
     "description": "Pantalon taille haute, coupe droite et raffinée.",
-    "image": "https://images.unsplash.com/photo/cFj_5IRSpFw",
+    "image": "https://images.unsplash.com/photo-h6PKsr0wDH4?w=600&q=80",
     "tailles": ["S", "M", "L", "XL"],
     "couleurs": ["Noir", "Kaki", "Bleu Marine"],
     "categorie": "Bas"
