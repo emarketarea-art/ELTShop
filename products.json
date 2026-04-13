@@ -27,7 +27,7 @@
     "prix": 18000,
     "devise": "FCFA",
     "description": "Pantalon taille haute, coupe droite et raffinée.",
-    "image": "https://unsplash.com/fr/photos/cinq-paires-de-jeans-accrochees-a-un-portant-2QSK4kFoVZE?utm_source=unsplash&utm_medium=referral&utm_content=creditShareLink",
+    "image": "https://images.unsplash.com/photo-1594938298603-c8148c4b4505?w=600&q=80",
     "tailles": ["S", "M", "L", "XL"],
     "couleurs": ["Noir", "Kaki", "Bleu Marine"],
     "categorie": "Bas"
