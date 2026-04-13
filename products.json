@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "nom": "T-Shirt Éclat",
+    "prix": 10000,
+    "devise": "FCFA",
+    "description": "T-shirt en coton premium, coupe moderne et confortable.",
+    "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
+    "tailles": ["XS", "S", "M", "L", "XL"],
+    "couleurs": ["Noir", "Blanc", "Beige"],
+    "categorie": "Hauts"
+  },
+  {
+    "id": 2,
+    "nom": "Robe Soleil",
+    "prix": 25000,
+    "devise": "FCFA",
+    "description": "Robe fluide et élégante, parfaite pour toutes occasions.",
+    "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
+    "tailles": ["S", "M", "L"],
+    "couleurs": ["Jaune", "Corail", "Blanc"],
+    "categorie": "Robes"
+  },
+  {
+    "id": 3,
+    "nom": "Pantalon Élite",
+    "prix": 18000,
+    "devise": "FCFA",
+    "description": "Pantalon taille haute, coupe droite et raffinée.",
+    "image": "https://images.unsplash.com/photo-1594938298603-c8148c4b4505?w=600&q=80",
+    "tailles": ["S", "M", "L", "XL"],
+    "couleurs": ["Noir", "Kaki", "Bleu Marine"],
+    "categorie": "Bas"
+  },
+  {
+    "id": 4,
+    "nom": "Veste Prestige",
+    "prix": 35000,
+    "devise": "FCFA",
+    "description": "Veste structurée, finitions impeccables, style business-casual.",
+    "image": "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&q=80",
+    "tailles": ["S", "M", "L", "XL"],
+    "couleurs": ["Camel", "Noir", "Gris"],
+    "categorie": "Vestes"
+  },
+  {
+    "id": 5,
+    "nom": "Jupe Liberté",
+    "prix": 14000,
+    "devise": "FCFA",
+    "description": "Jupe mi-longue avec fentes latérales, mouvement naturel.",
+    "image": "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600&q=80",
+    "tailles": ["XS", "S", "M", "L"],
+    "couleurs": ["Bordeaux", "Noir", "Vert Forêt"],
+    "categorie": "Bas"
+  },
+  {
+    "id": 6,
+    "nom": "Blazer Signature",
+    "prix": 42000,
+    "devise": "FCFA",
+    "description": "Blazer iconique, double boutonnage, silhouette affirmée.",
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    "tailles": ["S", "M", "L"],
+    "couleurs": ["Ivoire", "Noir", "Bleu Nuit"],
+    "categorie": "Vestes"
+  }
+]
