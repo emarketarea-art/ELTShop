@@ -2,1004 +2,667 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ELTShop — Boutique de Vêtement</title>
-
-  <!-- ===================================================
-       POLICES GOOGLE FONTS (gratuites)
-       Cormorant Garamond = titres élégants
-       DM Sans = texte lisible
-  ==================================================== -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Maison Élite — Boutique de mode premium. Commandez sur WhatsApp." />
+  <title>MAISON ÉLITE — Collection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* =====================================================
-       VARIABLES CSS — Modifiez les couleurs ici facilement
-    ====================================================== */
     :root {
-      --or:       #C9A96E;        /* accent doré */
-      --noir:     #0D0D0D;        /* noir profond */
-      --creme:    #F8F4EE;        /* fond crème */
-      --gris:     #6B6B6B;        /* texte secondaire */
-      --carte:    #FFFFFF;        /* fond des cartes */
-      --vert-wa:  #25D366;        /* vert WhatsApp officiel */
-      --vert-wa2: #128C7E;        /* vert foncé hover WhatsApp */
-      --rayon:    12px;           /* arrondi des coins */
-      --ombre:    0 8px 32px rgba(0,0,0,0.10);
+      --fond:    #F7F3EE;
+      --carte:   #FFFFFF;
+      --texte:   #1A1410;
+      --texte-2: #7A6A5A;
+      --or:      #B5893F;
+      --or-clair:#D4AE6A;
+      --pierre:  #E8DDD2;
+      --nav:     #140F0A;
+      --vert-wa: #25D366;
+      --vert-wa2:#128C7E;
+      --erreur:  #C0392B;
+      --rayon:   14px;
+      --ombre:   0 4px 24px rgba(26,20,10,.08);
+      --ombre-f: 0 12px 48px rgba(26,20,10,.16);
+      --ease:    cubic-bezier(0.16,1,0.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--fond);color:var(--texte);line-height:1.6;overflow-x:hidden}
+    body.modal-ouverte{overflow:hidden}
+
+    /* ── NAV ── */
+    .nav{position:sticky;top:0;z-index:200;background:var(--nav);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,5%,60px);border-bottom:1px solid rgba(181,137,63,.2)}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--or);letter-spacing:4px;text-transform:uppercase;text-decoration:none}
+    .nav-droite{display:flex;align-items:center;gap:6px}
+    .nav-btn{background:none;border:none;cursor:pointer;color:#ccc;padding:8px;border-radius:8px;display:flex;align-items:center;gap:6px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;text-decoration:none;transition:color .2s}
+    .nav-btn:hover{color:var(--or)}
+    .nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .barre-recherche{position:absolute;top:64px;left:0;right:0;background:var(--nav);padding:12px 5%;display:none;border-bottom:1px solid rgba(255,255,255,.08);z-index:200}
+    .barre-recherche.visible{display:block}
+    .input-recherche{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(181,137,63,.3);color:#fff;padding:11px 16px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s}
+    .input-recherche::placeholder{color:rgba(255,255,255,.35)}
+    .input-recherche:focus{border-color:var(--or)}
+
+    /* ── HERO ── */
+    .hero{min-height:82vh;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden}
+    @media(max-width:768px){.hero{grid-template-columns:1fr;min-height:auto}}
+    .hero-texte{display:flex;flex-direction:column;justify-content:center;padding:clamp(40px,8%,100px);background:var(--nav);position:relative;z-index:1}
+    .hero-texte::after{content:'';position:absolute;top:0;bottom:0;right:-1px;width:60px;background:var(--fond);clip-path:polygon(100% 0,100% 100%,0 50%);z-index:2}
+    @media(max-width:768px){.hero-texte::after{display:none};.hero-image{order:-1;height:55vw}}
+    .hero-tag{display:inline-flex;align-items:center;gap:8px;color:var(--or);font-size:.72rem;letter-spacing:4px;text-transform:uppercase;font-weight:500;margin-bottom:24px}
+    .hero-tag::before{content:'';display:block;width:32px;height:1px;background:var(--or)}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,6vw,5.5rem);font-weight:300;line-height:1.05;color:#F7F3EE;margin-bottom:22px}
+    .hero h1 em{font-style:italic;color:var(--or);display:block}
+    .hero-sous{color:rgba(247,243,238,.55);font-size:.92rem;max-width:360px;margin-bottom:40px;font-weight:300;line-height:1.8}
+    .hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+    .btn-primaire{background:var(--or);color:var(--nav);padding:14px 32px;border:none;border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:all .35s var(--ease)}
+    .btn-primaire:hover{background:var(--or-clair);transform:translateY(-2px)}
+    .btn-secondaire{background:transparent;color:rgba(247,243,238,.7);padding:14px 32px;border:1px solid rgba(247,243,238,.2);border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:all .35s var(--ease)}
+    .btn-secondaire:hover{border-color:var(--or);color:var(--or)}
+    .hero-image{position:relative;overflow:hidden;background:#2a1a08}
+    .hero-image img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:brightness(.85) contrast(1.05)}
+    .hero-image::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(20,15,10,.4),transparent 60%)}
+
+    /* ── FILTRES ── */
+    .zone-filtres{position:sticky;top:64px;z-index:100;background:var(--fond);border-bottom:1px solid var(--pierre);padding:0 clamp(16px,5%,60px)}
+    .filtres-scroll{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:14px 0;scrollbar-width:none}
+    .filtres-scroll::-webkit-scrollbar{display:none}
+    .filtre-pill{flex-shrink:0;background:transparent;border:1.5px solid var(--pierre);color:var(--texte-2);padding:7px 18px;border-radius:100px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .3s var(--ease);white-space:nowrap}
+    .filtre-pill:hover{border-color:var(--or);color:var(--or)}
+    .filtre-pill.actif{background:var(--texte);color:#fff;border-color:var(--texte)}
+    .filtres-sep{width:1px;height:20px;background:var(--pierre);flex-shrink:0}
+    .compteur-produits{margin-left:auto;flex-shrink:0;font-size:.78rem;color:var(--texte-2);white-space:nowrap}
+
+    /* ── CATALOGUE ── */
+    .catalogue{max-width:1280px;margin:0 auto;padding:50px clamp(16px,5%,60px)}
+    .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
+
+    /* ── SKELETON ── */
+    @keyframes shimmer{0%{background-position:-400% 0}100%{background-position:400% 0}}
+    .carte-skeleton{border-radius:var(--rayon);overflow:hidden;background:#fff;box-shadow:var(--ombre)}
+    .skel{background:linear-gradient(90deg,#f0ebe3 25%,#e8ddd2 50%,#f0ebe3 75%);background-size:400% 100%;animation:shimmer 1.8s ease infinite}
+    .skel-image{height:290px}
+    .skel-corps{padding:18px}
+    .skel-ligne{height:14px;border-radius:6px;margin-bottom:10px}
+    .skel-ligne.large{width:70%}
+    .skel-ligne.court{width:40%}
+    .skel-ligne.bouton{height:40px;margin-top:14px;border-radius:8px}
+
+    /* ── CARTE PRODUIT ── */
+    .carte{background:var(--carte);border-radius:var(--rayon);overflow:hidden;box-shadow:var(--ombre);cursor:pointer;opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease,box-shadow .35s ease}
+    .carte.visible{opacity:1;transform:translateY(0)}
+    .carte:hover{box-shadow:var(--ombre-f);transform:translateY(-6px)}
+    .carte-image{height:290px;overflow:hidden;position:relative;background:var(--pierre)}
+    .carte-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease),opacity .4s ease;opacity:0}
+    .carte-image img.chargee{opacity:1}
+    .carte:hover .carte-image img{transform:scale(1.06)}
+    .badge-cat{position:absolute;top:12px;left:12px;background:rgba(20,15,10,.75);backdrop-filter:blur(6px);color:var(--or);font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:100px;border:1px solid rgba(181,137,63,.3)}
+    .carte-corps{padding:18px 20px 20px}
+    .carte-nom{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;margin-bottom:4px;line-height:1.2}
+    .carte-prix{font-size:1rem;font-weight:600;color:var(--or);margin-bottom:14px}
+    .carte-meta{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px}
+    .tailles-preview{display:flex;gap:4px;flex-wrap:wrap}
+    .taille-badge{font-size:.68rem;color:var(--texte-2);border:1px solid var(--pierre);padding:2px 7px;border-radius:4px}
+    .couleurs-preview{display:flex;gap:5px}
+    .couleur-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(0,0,0,.1)}
+    .btn-voir-carte{width:100%;padding:12px;background:var(--texte);color:#fff;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .25s}
+    .btn-voir-carte:hover{background:#2d2520}
+
+    /* ── CHARGER PLUS ── */
+    .zone-charger-plus{text-align:center;padding:40px 0 10px}
+    .btn-charger-plus{background:transparent;border:1.5px solid var(--texte);color:var(--texte);padding:14px 40px;border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .35s var(--ease)}
+    .btn-charger-plus:hover{background:var(--texte);color:#fff}
+
+    /* ── MODAL DESKTOP ── */
+    .overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(20,15,10,.65);backdrop-filter:blur(4px)}
+    .overlay.ouverte{display:flex;align-items:center;justify-content:center;padding:20px}
+    .modal{width:min(860px,92vw);max-height:88vh;background:#fff;border-radius:20px;overflow:hidden;display:grid;grid-template-columns:45% 55%;animation:modalEntree .4s var(--ease)}
+    @keyframes modalEntree{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── MODAL MOBILE : bottom-sheet ── */
+    @media(max-width:767px){
+      .overlay.ouverte{align-items:flex-end;padding:0}
+      .modal{width:100%;max-height:93dvh;border-radius:24px 24px 0 0;grid-template-columns:1fr;display:flex;flex-direction:column;animation:bottomSheet .45s var(--ease)}
+      @keyframes bottomSheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
     }
 
-    /* =====================================================
-       RESET & BASE
-    ====================================================== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background-color: var(--creme);
-      color: var(--noir);
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    /* =====================================================
-       BARRE DE NAVIGATION
-    ====================================================== */
-    header {
-      background: var(--noir);
-      padding: 0 5%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 70px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
-    }
-
-    .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: var(--or);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      text-decoration: none;
-    }
-
-    nav a {
-      color: #ccc;
-      text-decoration: none;
-      margin-left: 28px;
-      font-size: 0.85rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-    nav a:hover { color: var(--or); }
-
-    /* Masquer nav sur mobile */
-    @media (max-width: 600px) { nav { display: none; } }
-
-    /* =====================================================
-       HERO BANNER
-    ====================================================== */
-    .hero {
-      background: linear-gradient(135deg, #0D0D0D 0%, #2a1a08 50%, #0D0D0D 100%);
-      color: white;
-      text-align: center;
-      padding: 90px 5% 80px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Ligne décorative dorée */
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--or), transparent);
-    }
-
-    .hero-tag {
-      display: inline-block;
-      border: 1px solid var(--or);
-      color: var(--or);
-      font-size: 0.72rem;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      padding: 6px 18px;
-      margin-bottom: 24px;
-    }
-
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.5rem, 7vw, 5rem); /* responsive */
-      font-weight: 300;
-      line-height: 1.1;
-      margin-bottom: 20px;
-    }
-
-    .hero h1 em {
-      font-style: italic;
-      color: var(--or);
-    }
-
-    .hero p {
-      color: #aaa;
-      max-width: 500px;
-      margin: 0 auto 36px;
-      font-weight: 300;
-    }
-
-    .btn-hero {
-      background: var(--or);
-      color: var(--noir);
-      padding: 14px 36px;
-      text-decoration: none;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-size: 0.82rem;
-      display: inline-block;
-      transition: transform 0.3s, background 0.3s;
-    }
-    .btn-hero:hover { background: #e8c07f; transform: translateY(-2px); }
-
-    /* =====================================================
-       SECTION CATALOGUE
-    ====================================================== */
-    .catalogue {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 70px 5%;
-    }
-
-    .section-titre {
-      text-align: center;
-      margin-bottom: 50px;
-    }
-
-    .section-titre h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 300;
-      margin-bottom: 12px;
-    }
-
-    .section-titre .ligne-or {
-      width: 50px;
-      height: 2px;
-      background: var(--or);
-      margin: 0 auto;
-    }
-
-    /* =====================================================
-       GRILLE DES PRODUITS (responsive)
-    ====================================================== */
-    .grille {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 28px;
-    }
-
-    /* =====================================================
-       CARTE PRODUIT
-    ====================================================== */
-    .carte {
-      background: var(--carte);
-      border-radius: var(--rayon);
-      overflow: hidden;
-      box-shadow: var(--ombre);
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
-      cursor: pointer;
-    }
-
-    /* Animation au survol (hover) */
-    .carte:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-    }
-
-    .carte-image {
-      position: relative;
-      overflow: hidden;
-      height: 300px;
-    }
-
-    .carte-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    /* Zoom de l'image au hover */
-    .carte:hover .carte-image img { transform: scale(1.07); }
-
-    /* Badge catégorie */
-    .badge {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      background: var(--or);
-      color: var(--noir);
-      font-size: 0.68rem;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 20px;
-    }
-
-    .carte-corps {
-      padding: 22px;
-    }
-
-    .carte-nom {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .carte-prix {
-      color: var(--or);
-      font-weight: 500;
-      font-size: 1.05rem;
-      margin-bottom: 16px;
-    }
-
-    /* Tailles mini sur la carte */
-    .carte-tailles {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .taille-mini {
-      border: 1px solid #ddd;
-      font-size: 0.72rem;
-      padding: 3px 9px;
-      border-radius: 4px;
-      color: var(--gris);
-    }
-
-    /* Couleurs mini (cercles) */
-    .carte-couleurs {
-      display: flex;
-      gap: 7px;
-      margin-bottom: 18px;
-    }
-
-    .couleur-mini {
-      font-size: 0.72rem;
-      color: var(--gris);
-      background: #f0f0f0;
-      border-radius: 20px;
-      padding: 2px 10px;
-    }
-
-    /* Bouton "Voir & Commander" */
-    .btn-voir {
-      width: 100%;
-      background: var(--noir);
-      color: white;
-      border: none;
-      padding: 13px;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .btn-voir:hover { background: #333; }
-
-    /* =====================================================
-       MODAL (fenêtre de détail produit)
-    ====================================================== */
-    .overlay {
-      display: none; /* caché par défaut */
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-      z-index: 500;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      backdrop-filter: blur(4px);
-    }
-
-    /* Quand on ajoute la classe "actif", la modal s'affiche */
-    .overlay.actif { display: flex; }
-
-    .modal {
-      background: white;
-      border-radius: var(--rayon);
-      max-width: 800px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      animation: slideUp 0.35s ease;
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Sur mobile, la modal passe en colonne */
-    @media (max-width: 640px) {
-      .modal { grid-template-columns: 1fr; }
-    }
-
-    .modal-image {
-      height: 100%;
-      min-height: 300px;
-      overflow: hidden;
-      border-radius: var(--rayon) 0 0 var(--rayon);
-    }
-
-    @media (max-width: 640px) {
-      .modal-image { border-radius: var(--rayon) var(--rayon) 0 0; min-height: 250px; }
-    }
-
-    .modal-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .modal-infos {
-      padding: 32px 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .modal-fermer {
-      align-self: flex-end;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--gris);
-      line-height: 1;
-      transition: color 0.2s;
-    }
-    .modal-fermer:hover { color: var(--noir); }
-
-    .modal-nom {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.9rem;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-
-    .modal-prix {
-      font-size: 1.2rem;
-      font-weight: 500;
-      color: var(--or);
-    }
-
-    .modal-desc {
-      color: var(--gris);
-      font-size: 0.9rem;
-      line-height: 1.7;
-    }
-
-    /* Étiquette "Choisir une taille" */
-    .label-choix {
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--gris);
-      margin-bottom: 4px;
-    }
-
-    /* Boutons de sélection taille */
-    .groupe-tailles {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .btn-taille {
-      border: 1.5px solid #ddd;
-      background: white;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-
-    /* Taille sélectionnée = fond noir */
-    .btn-taille.selectionne {
-      background: var(--noir);
-      color: white;
-      border-color: var(--noir);
-    }
-
-    .btn-taille:hover:not(.selectionne) {
-      border-color: var(--or);
-      color: var(--or);
-    }
-
-    /* Boutons de sélection couleur */
-    .groupe-couleurs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .btn-couleur {
-      border: 1.5px solid #ddd;
-      background: white;
-      padding: 7px 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.82rem;
-      transition: all 0.2s;
-    }
-
-    .btn-couleur.selectionne {
-      background: var(--or);
-      color: var(--noir);
-      border-color: var(--or);
-      font-weight: 500;
-    }
-
-    .btn-couleur:hover:not(.selectionne) {
-      border-color: var(--or);
-    }
-
-    /* =====================================================
-       BOUTON COMMANDER SUR WHATSAPP
-    ====================================================== */
-    .btn-whatsapp {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: var(--vert-wa);
-      color: white;
-      border: none;
-      padding: 16px;
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.3s, transform 0.2s;
-      margin-top: 6px;
-    }
-
-    .btn-whatsapp:hover {
-      background: var(--vert-wa2);
-      transform: translateY(-2px);
-    }
-
-    .btn-whatsapp svg {
-      width: 22px;
-      height: 22px;
-      fill: white;
-      flex-shrink: 0;
-    }
-
-    /* Message d'erreur si pas de taille/couleur */
-    .msg-erreur {
-      display: none;
-      color: #e74c3c;
-      font-size: 0.82rem;
-      background: #fde8e8;
-      padding: 10px 14px;
-      border-radius: 8px;
-      border-left: 3px solid #e74c3c;
-    }
-    .msg-erreur.visible { display: block; }
-
-    /* =====================================================
-       BOUTON WHATSAPP FLOTTANT (toujours visible)
-    ====================================================== */
-    .wa-flottant {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      background: var(--vert-wa);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
-      z-index: 400;
-      text-decoration: none;
-      transition: transform 0.3s, background 0.3s;
-      animation: pulse 2.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5); }
-      50%       { box-shadow: 0 6px 30px rgba(37, 211, 102, 0.8); }
-    }
-
-    .wa-flottant:hover {
-      transform: scale(1.1);
-      background: var(--vert-wa2);
-      animation: none;
-    }
-
-    .wa-flottant svg {
-      width: 30px;
-      height: 30px;
-      fill: white;
-    }
-
-    /* Info-bulle au hover du bouton flottant */
-    .wa-flottant::before {
-      content: "Nous contacter";
-      position: absolute;
-      right: 70px;
-      background: var(--noir);
-      color: white;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-    }
-    .wa-flottant:hover::before { opacity: 1; }
-
-    /* =====================================================
-       FOOTER
-    ====================================================== */
-    footer {
-      background: var(--noir);
-      color: #888;
-      text-align: center;
-      padding: 36px 5%;
-      font-size: 0.85rem;
-    }
-
-    footer .footer-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
-      color: var(--or);
-      letter-spacing: 3px;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    /* =====================================================
-       LOADER (pendant le chargement des produits)
-    ====================================================== */
-    .loader {
-      text-align: center;
-      padding: 60px;
-      color: var(--gris);
-      font-style: italic;
-    }
+    .modal-handle{display:none;width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 0;flex-shrink:0}
+    @media(max-width:767px){.modal-handle{display:block}}
+
+    .modal-image-zone{position:relative;overflow:hidden;background:var(--pierre)}
+    @media(max-width:767px){.modal-image-zone{height:260px;flex-shrink:0}}
+    .modal-image-zone img{width:100%;height:100%;object-fit:cover;object-position:center top}
+
+    .btn-fermer{position:absolute;top:14px;right:14px;width:36px;height:36px;background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .2s}
+    .btn-fermer:hover{background:rgba(255,255,255,.2)}
+
+    .modal-contenu{padding:28px 28px 0;overflow-y:auto;display:flex;flex-direction:column;gap:18px;-webkit-overflow-scrolling:touch}
+    @media(max-width:767px){.modal-contenu{padding:20px 20px 0;flex:1}}
+
+    .modal-badge{font-size:.65rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--or);display:block;margin-bottom:8px}
+    .modal-nom{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,4vw,2.1rem);font-weight:600;line-height:1.15;margin-bottom:8px}
+    .modal-prix{font-size:1.2rem;font-weight:600;color:var(--or)}
+    .modal-desc{font-size:.88rem;color:var(--texte-2);line-height:1.8;border-top:1px solid var(--pierre);padding-top:16px}
+    .section-label{font-size:.7rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--texte-2);margin-bottom:10px}
+    .groupe-choix{display:flex;flex-wrap:wrap;gap:8px}
+
+    .btn-option{border:1.5px solid var(--pierre);background:#fff;color:var(--texte);padding:9px 18px;border-radius:8px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;transition:all .3s var(--ease)}
+    .btn-option:hover{border-color:var(--or);color:var(--or)}
+    .btn-option.selectionne{background:var(--texte);color:#fff;border-color:var(--texte);font-weight:500}
+
+    .btn-couleur-opt{border:1.5px solid var(--pierre);background:#fff;color:var(--texte);padding:8px 16px;border-radius:100px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;transition:all .3s var(--ease);display:flex;align-items:center;gap:7px}
+    .btn-couleur-opt:hover{border-color:var(--or)}
+    .btn-couleur-opt.selectionne{background:var(--or);color:var(--nav);border-color:var(--or);font-weight:600}
+
+    /* Zone basse sticky de la modal */
+    .modal-bas{background:#fff;padding:16px 28px 24px;border-top:1px solid var(--pierre);flex-shrink:0}
+    @media(max-width:767px){.modal-bas{padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px))}}
+
+    .msg-erreur{display:none;color:var(--erreur);font-size:.8rem;background:#fdf0ee;padding:9px 14px;border-radius:8px;border-left:3px solid var(--erreur);margin-bottom:12px}
+    .msg-erreur.visible{display:block}
+
+    .btn-whatsapp{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--vert-wa);color:#fff;border:none;padding:16px;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .25s,transform .2s}
+    .btn-whatsapp:hover{background:var(--vert-wa2);transform:translateY(-1px)}
+    .btn-whatsapp svg{width:20px;height:20px;fill:#fff;flex-shrink:0}
+
+    /* ── FLOTTANT ── */
+    .wa-flottant{position:fixed;bottom:28px;right:22px;width:56px;height:56px;background:var(--vert-wa);border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;z-index:300;box-shadow:0 4px 20px rgba(37,211,102,.45);animation:battement 3s ease-in-out infinite;transition:transform .3s}
+    .wa-flottant:hover{transform:scale(1.12);animation:none}
+    .wa-flottant svg{width:28px;height:28px;fill:#fff}
+    @keyframes battement{0%,90%,100%{transform:scale(1)}95%{transform:scale(1.07)}}
+    .wa-flottant-label{position:absolute;right:64px;background:var(--nav);color:#fff;padding:6px 14px;border-radius:8px;font-size:.78rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .25s}
+    .wa-flottant:hover .wa-flottant-label{opacity:1}
+
+    /* ── AUCUN RÉSULTAT ── */
+    .aucun-resultat{display:none;text-align:center;padding:80px 20px;color:var(--texte-2)}
+    .aucun-resultat.visible{display:block}
+
+    /* ── FOOTER ── */
+    footer{background:var(--nav);color:rgba(247,243,238,.45);padding:clamp(40px,6%,60px) clamp(16px,5%,60px);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end}
+    @media(max-width:600px){footer{grid-template-columns:1fr}}
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--or);letter-spacing:4px;display:block;margin-bottom:8px}
+    footer p{font-size:.8rem;line-height:1.7}
+    .footer-lien-admin{font-size:.75rem;color:rgba(247,243,238,.2);text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:color .2s}
+    .footer-lien-admin:hover{color:var(--or)}
   </style>
 </head>
-
 <body>
 
-  <!-- =====================================================
-       NAVIGATION
-  ====================================================== -->
   <header>
-    <a href="#" class="logo">ELTShop</a>
-    <nav>
-      <a href="#catalogue">Collection</a>
-      <a href="#contact-wa">Contact</a>
+    <nav class="nav">
+      <a href="#" class="nav-logo">ElTShop</a>
+      <div class="nav-droite">
+        <button class="nav-btn" onclick="toggleRecherche()" title="Rechercher">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <a href="admin.html" class="nav-btn" id="nav-admin" style="display:none" title="CMS Admin">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </a>
+      </div>
     </nav>
+    <div class="barre-recherche" id="barre-recherche">
+      <input class="input-recherche" id="input-recherche" type="text" placeholder="Rechercher un article, couleur, catégorie…" oninput="filtrerProduits()" autocomplete="off" />
+    </div>
   </header>
 
-  <!-- =====================================================
-       HERO
-  ====================================================== -->
   <section class="hero">
-    <div class="hero-tag">Nos Collections</div>
-    <h1>La mode,<br><em>redéfinie</em></h1>
-    <p>Des pièces soigneusement sélectionnées pour révéler votre style unique. Commandez en quelques secondes sur WhatsApp.</p>
-    <a href="#catalogue" class="btn-hero">Découvrir la collection</a>
-  </section>
-
-  <!-- =====================================================
-       CATALOGUE
-  ====================================================== -->
-  <section class="catalogue" id="catalogue">
-    <div class="section-titre">
-      <h2>Notre Collection</h2>
-      <div class="ligne-or"></div>
+    <div class="hero-texte">
+      <span class="hero-tag">Nouvelle Collection</span>
+      <h1>L'élégance,<br><em>réinventée</em></h1>
+      <p class="hero-sous">Des pièces d'exception pensées pour chaque moment. Commandez en quelques secondes, directement sur WhatsApp.</p>
+      <div class="hero-ctas">
+        <a href="#catalogue" class="btn-primaire">Voir la collection</a>
+        <a href="#" class="btn-secondaire" id="hero-wa-btn">Commander →</a>
+      </div>
     </div>
-
-    <!-- Les produits seront injectés ici par JavaScript -->
-    <div class="grille" id="grille-produits">
-      <p class="loader">Chargement des produits…</p>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=900&q=80&fm=webp&auto=format" alt="Collection Maison Élite" fetchpriority="high" />
     </div>
   </section>
 
-  <!-- =====================================================
-       MODAL DÉTAIL PRODUIT
-  ====================================================== -->
-  <div class="overlay" id="overlay" onclick="fermerModal(event)">
-    <div class="modal" id="modal">
+  <!-- Filtres catégories (sticky) -->
+  <div class="zone-filtres" id="catalogue">
+    <div class="filtres-scroll" id="filtres"></div>
+  </div>
 
-      <!-- Image du produit -->
-      <div class="modal-image">
+  <main class="catalogue">
+    <div class="grille" id="grille-skeleton"></div>
+    <div class="grille" id="grille-produits"></div>
+    <div class="aucun-resultat" id="aucun-resultat">
+      <p style="font-size:3rem;margin-bottom:12px">🔍</p>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400">Aucun article trouvé</h3>
+      <p style="margin-top:8px;font-size:.85rem">Essayez un autre mot-clé ou catégorie</p>
+    </div>
+    <div class="zone-charger-plus" id="zone-charger-plus" style="display:none">
+      <button class="btn-charger-plus" onclick="chargerPage()">Voir plus d'articles</button>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="overlay" id="overlay" onclick="fermerModalSiOverlay(event)">
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
+      <div class="modal-handle"></div>
+
+      <div class="modal-image-zone">
+        <button class="btn-fermer" onclick="fermerModal()" aria-label="Fermer">✕</button>
         <img id="modal-img" src="" alt="" />
       </div>
 
-      <!-- Informations & choix -->
-      <div class="modal-infos">
-        <button class="modal-fermer" onclick="fermerModal()">✕</button>
-
+      <div class="modal-contenu" id="modal-contenu">
         <div>
-          <p id="modal-badge" class="badge" style="position:static;display:inline-block;margin-bottom:10px;"></p>
+          <span class="modal-badge" id="modal-badge"></span>
           <h2 class="modal-nom" id="modal-nom"></h2>
           <p class="modal-prix" id="modal-prix"></p>
         </div>
-
         <p class="modal-desc" id="modal-desc"></p>
-
-        <!-- Sélection de la taille -->
         <div>
-          <p class="label-choix">Choisir une taille</p>
-          <div class="groupe-tailles" id="modal-tailles"></div>
+          <p class="section-label">Choisir une taille</p>
+          <div class="groupe-choix" id="modal-tailles"></div>
         </div>
-
-        <!-- Sélection de la couleur -->
         <div>
-          <p class="label-choix">Choisir une couleur</p>
-          <div class="groupe-couleurs" id="modal-couleurs"></div>
+          <p class="section-label">Choisir une couleur</p>
+          <div class="groupe-choix" id="modal-couleurs"></div>
         </div>
+        <div style="height:120px;flex-shrink:0"></div>
+      </div>
 
-        <!-- Message d'erreur -->
-        <p class="msg-erreur" id="msg-erreur">
-          ⚠️ Veuillez choisir une taille et une couleur avant de commander.
-        </p>
-
-        <!-- BOUTON WHATSAPP PRINCIPAL -->
-        <button class="btn-whatsapp" id="btn-wa" onclick="commanderWhatsApp()">
-          <!-- Logo WhatsApp SVG -->
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-          </svg>
+      <div class="modal-bas">
+        <p class="msg-erreur" id="msg-erreur">⚠️ Veuillez choisir une taille et une couleur.</p>
+        <button class="btn-whatsapp" onclick="commanderWhatsApp()">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Commander sur WhatsApp
         </button>
-
       </div>
     </div>
   </div>
 
-  <!-- =====================================================
-       BOUTON WHATSAPP FLOTTANT
-       ⚙️ Changez le numéro dans WHATSAPP_NUMERO plus bas
-  ====================================================== -->
-  <a class="wa-flottant" id="wa-flottant" href="#" target="_blank" title="Nous contacter sur WhatsApp">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-    </svg>
+  <!-- Bouton WhatsApp flottant -->
+  <a class="wa-flottant" id="wa-flottant" href="#" target="_blank" rel="noopener">
+    <div class="wa-flottant-label">Nous écrire</div>
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
 
-  <!-- =====================================================
-       FOOTER
-  ====================================================== -->
-  <footer id="contact-wa">
-    <span class="footer-logo">ELTShop</span>
-    <p>© 2026 ELTShop · Boutique de Vêtement · Tous droits réservés</p>
-    <p style="margin-top:8px;">Commandez directement sur WhatsApp — Livraison rapide</p>
+  <footer>
+    <div>
+      <span class="footer-logo">ELTShop</span>
+      <p>Boutique de mode premium · Livraison rapide</p>
+      <p style="margin-top:6px">© 2025 Maison Élite · Tous droits réservés</p>
+    </div>
+    <div style="text-align:right">
+      <a href="admin.html" class="footer-lien-admin">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Gestion CMS
+      </a>
+    </div>
   </footer>
 
-
-  <!-- =====================================================
-       JAVASCRIPT PRINCIPAL
-  ====================================================== -->
   <script>
-
-    /* ====================================================
-       ⚙️ CONFIGURATION — MODIFIEZ UNIQUEMENT ICI
-       Remplacez par votre vrai numéro WhatsApp
-       Format international SANS le + et SANS espaces
-       Exemple Togo : 22891234567
+    /* =====================================================
+       ⚙️ CONFIGURATION — Modifiez uniquement ici
     ===================================================== */
-    const WHATSAPP_NUMERO = "22891183716"; // ← CHANGEZ CE NUMÉRO
+    const CONFIG = {
+      WHATSAPP_NUMERO: "22891234567", // ← Votre numéro sans le +
+      ITEMS_PAR_PAGE:  12,
+      CLE_STORAGE:     "elite_produits",
+    };
 
-    /* Variable globale pour le produit affiché dans la modal */
-    let produitActuel = null;
+    /* État global */
+    let tousProduits    = [];
+    let produitsFiltres = [];
+    let pageActuelle    = 0;
+    let produitActuel   = null;
+    let filtreActif     = 'Tous';
+    let touchStartY     = 0;
 
-    /* ====================================================
-       ÉTAPE 1 — Charger les produits depuis le JSON
-       fetch() lit le fichier products.json et retourne
-       les données sous forme d'objet JavaScript
+    /* =====================================================
+       INTERSECTION OBSERVERS
+    ===================================================== */
+    // Animations d'entrée des cartes (fade + slide)
+    const carteObserver = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); carteObserver.unobserve(e.target); }
+      }),
+      { threshold: 0.08 }
+    );
+
+    // Lazy loading des images
+    const imgObserver = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const img = e.target;
+        if (!img.dataset.src) return;
+        img.src = optimiserUrl(img.dataset.src, 500);
+        img.onload  = () => img.classList.add('chargee');
+        img.onerror = () => { img.src = placeholder(img.alt); img.classList.add('chargee'); };
+        imgObserver.unobserve(img);
+      }),
+      { rootMargin: '400px 0px' }
+    );
+
+    /* =====================================================
+       UTILITAIRES IMAGE
+    ===================================================== */
+    function optimiserUrl(url, w = 600) {
+      if (!url) return placeholder('');
+      if (url.includes('unsplash.com'))
+        return `${url.split('?')[0]}?w=${w}&q=75&fm=webp&auto=format&fit=crop`;
+      return url;
+    }
+
+    function placeholder(alt) {
+      return `data:image/svg+xml,${encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="400"><rect width="500" height="400" fill="#F0EBE3"/><text x="250" y="205" text-anchor="middle" fill="#B5893F" font-size="13" font-family="sans-serif">${alt||'Image'}</text></svg>`
+      )}`;
+    }
+
+    /* =====================================================
+       MÉLANGE (Fisher-Yates) — ordre aléatoire à chaque chargement
+    ===================================================== */
+    function melanger(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    /* =====================================================
+       CHARGEMENT DES PRODUITS
+       Priorité : localStorage (CMS) → products.json → données intégrées
     ===================================================== */
     async function chargerProduits() {
+      afficherSkeletons(CONFIG.ITEMS_PAR_PAGE);
       try {
-        // On lit le fichier JSON local
-        const reponse = await fetch('products.json');
-        const produits = await reponse.json();
-
-        // On affiche les produits dans la grille
-        afficherProduits(produits);
-
-      } catch (erreur) {
-        // Si le JSON ne se charge pas (ex: ouvert en local sans serveur)
-        // On utilise des données de secours
-        console.warn("JSON non chargé, utilisation des données de secours :", erreur);
-        afficherProduits(PRODUITS_SECOURS);
+        const stockage = localStorage.getItem(CONFIG.CLE_STORAGE);
+        if (stockage) {
+          const d = JSON.parse(stockage);
+          if (d?.length) { init(d); return; }
+        }
+        const rep = await fetch('./products.json');
+        if (!rep.ok) throw new Error();
+        init(await rep.json());
+      } catch {
+        init(DEFAUT);
       }
     }
 
-    /* ====================================================
-       DONNÉES DE SECOURS (si fetch() échoue en local)
-       Identiques au fichier products.json
+    function init(donnees) {
+      tousProduits    = melanger(donnees);
+      produitsFiltres = tousProduits;
+      cacherSkeletons();
+      construireFiltres();
+      pageActuelle = 0;
+      document.getElementById('grille-produits').innerHTML = '';
+      chargerPage();
+    }
+
+    /* =====================================================
+       SKELETONS
     ===================================================== */
-    const PRODUITS_SECOURS = [
-      {
-        id: 1, nom: "T-Shirt Éclat", prix: 10000, devise: "FCFA",
-        description: "T-shirt en coton premium, coupe moderne et confortable.",
-        image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
-        tailles: ["XS","S","M","L","XL"], couleurs: ["Noir","Blanc","Beige"],
-        categorie: "Hauts"
-      },
-      {
-        id: 2, nom: "Robe Soleil", prix: 25000, devise: "FCFA",
-        description: "Robe fluide et élégante, parfaite pour toutes occasions.",
-        image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
-        tailles: ["S","M","L"], couleurs: ["Jaune","Corail","Blanc"],
-        categorie: "Robes"
-      },
-      {
-        id: 3, nom: "Pantalon Élite", prix: 18000, devise: "FCFA",
-        description: "Pantalon taille haute, coupe droite et raffinée.",
-        image: "https://images.unsplash.com/photo-1594938298603-c8148c4b4505?w=600&q=80",
-        tailles: ["S","M","L","XL"], couleurs: ["Noir","Kaki","Bleu Marine"],
-        categorie: "Bas"
-      },
-      {
-        id: 4, nom: "Veste Prestige", prix: 35000, devise: "FCFA",
-        description: "Veste structurée, finitions impeccables, style business-casual.",
-        image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&q=80",
-        tailles: ["S","M","L","XL"], couleurs: ["Camel","Noir","Gris"],
-        categorie: "Vestes"
-      },
-      {
-        id: 5, nom: "Jupe Liberté", prix: 14000, devise: "FCFA",
-        description: "Jupe mi-longue avec fentes latérales, mouvement naturel.",
-        image: "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600&q=80",
-        tailles: ["XS","S","M","L"], couleurs: ["Bordeaux","Noir","Vert Forêt"],
-        categorie: "Bas"
-      },
-      {
-        id: 6, nom: "Blazer Signature", prix: 42000, devise: "FCFA",
-        description: "Blazer iconique, double boutonnage, silhouette affirmée.",
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-        tailles: ["S","M","L"], couleurs: ["Ivoire","Noir","Bleu Nuit"],
-        categorie: "Vestes"
+    function afficherSkeletons(n) {
+      document.getElementById('grille-skeleton').innerHTML = Array.from({length:n}, () =>
+        `<div class="carte-skeleton"><div class="skel skel-image"></div>
+        <div class="skel-corps"><div class="skel skel-ligne large"></div>
+        <div class="skel skel-ligne court"></div><div class="skel skel-ligne bouton"></div></div></div>`
+      ).join('');
+    }
+    function cacherSkeletons() { document.getElementById('grille-skeleton').innerHTML = ''; }
+
+    /* =====================================================
+       PAGINATION
+    ===================================================== */
+    function chargerPage() {
+      const debut = pageActuelle * CONFIG.ITEMS_PAR_PAGE;
+      const lot   = produitsFiltres.slice(debut, debut + CONFIG.ITEMS_PAR_PAGE);
+
+      if (!lot.length && !pageActuelle) {
+        document.getElementById('aucun-resultat').classList.add('visible');
+        document.getElementById('zone-charger-plus').style.display = 'none';
+        return;
       }
-    ];
+      document.getElementById('aucun-resultat').classList.remove('visible');
 
-    /* ====================================================
-       ÉTAPE 2 — Créer les cartes HTML pour chaque produit
-    ===================================================== */
-    function afficherProduits(liste) {
       const grille = document.getElementById('grille-produits');
-      grille.innerHTML = ''; // Vider le loader
-
-      liste.forEach(produit => {
-        // Créer l'élément carte
-        const carte = document.createElement('div');
-        carte.className = 'carte';
-
-        // Construire le HTML de la carte
-        carte.innerHTML = `
-          <div class="carte-image">
-            <img src="${produit.image}" alt="${produit.nom}" loading="lazy" />
-            <span class="badge">${produit.categorie}</span>
-          </div>
-          <div class="carte-corps">
-            <h3 class="carte-nom">${produit.nom}</h3>
-            <p class="carte-prix">${produit.prix.toLocaleString('fr-FR')} ${produit.devise}</p>
-
-            <div class="carte-tailles">
-              ${produit.tailles.map(t => `<span class="taille-mini">${t}</span>`).join('')}
-            </div>
-
-            <div class="carte-couleurs">
-              ${produit.couleurs.map(c => `<span class="couleur-mini">${c}</span>`).join('')}
-            </div>
-
-            <button class="btn-voir" onclick="ouvrirModal(${produit.id})">
-              Voir &amp; Commander
-            </button>
-          </div>
-        `;
-
+      lot.forEach((p, i) => {
+        const carte = creerCarte(p);
         grille.appendChild(carte);
+        setTimeout(() => carteObserver.observe(carte), i * 40);
+        const img = carte.querySelector('img[data-src]');
+        if (img) imgObserver.observe(img);
       });
 
-      // Sauvegarder la liste pour y accéder plus tard
-      window.listeProduits = liste;
+      pageActuelle++;
+      const fin = debut + CONFIG.ITEMS_PAR_PAGE;
+      document.getElementById('zone-charger-plus').style.display =
+        fin < produitsFiltres.length ? 'block' : 'none';
+
+      // Mise à jour compteur
+      const c = document.getElementById('compteur');
+      if (c) c.textContent = `${produitsFiltres.length} article${produitsFiltres.length!==1?'s':''}`;
     }
 
-    /* ====================================================
-       ÉTAPE 3 — Ouvrir la modal avec les détails du produit
+    /* =====================================================
+       CRÉATION CARTE
+    ===================================================== */
+    function creerCarte(p) {
+      const el = document.createElement('article');
+      el.className = 'carte';
+      el.dataset.id = p.id;
+
+      const tailles = p.tailles.slice(0,4).map(t =>
+        `<span class="taille-badge">${t}</span>`
+      ).join('') + (p.tailles.length > 4 ? `<span class="taille-badge">+${p.tailles.length-4}</span>` : '');
+
+      const couleurs = p.couleurs.map(c =>
+        `<span class="couleur-dot" style="background:${couleurCSS(c)}" title="${c}"></span>`
+      ).join('');
+
+      el.innerHTML = `
+        <div class="carte-image">
+          <img data-src="${p.image}" src="${placeholder(p.nom)}" alt="${p.nom}" decoding="async" />
+          <span class="badge-cat">${p.categorie}</span>
+        </div>
+        <div class="carte-corps">
+          <h3 class="carte-nom">${p.nom}</h3>
+          <p class="carte-prix">${p.prix.toLocaleString('fr-FR')} ${p.devise}</p>
+          <div class="carte-meta">
+            <div class="tailles-preview">${tailles}</div>
+            <div class="couleurs-preview">${couleurs}</div>
+          </div>
+          <button class="btn-voir-carte" onclick="ouvrirModal(${p.id});event.stopPropagation()">Voir &amp; Commander</button>
+        </div>`;
+
+      el.addEventListener('click', () => ouvrirModal(p.id));
+      return el;
+    }
+
+    /* =====================================================
+       COULEURS → CSS
+    ===================================================== */
+    function couleurCSS(nom) {
+      const p = {
+        'Noir':'#1A1A1A','Blanc':'#F8F8F8','Beige':'#E8D5B0','Blanc Cassé':'#F5F0E8',
+        'Kaki':'#8B8060','Camel':'#C19A6B','Gris':'#9E9E9E','Bleu Marine':'#1B3A6B',
+        'Bordeaux':'#6D1B2F','Ivoire':'#FFFFF0','Bleu Nuit':'#1A237E','Corail':'#FF6B6B',
+        'Jaune':'#F9D71C','Vert Forêt':'#2D5A27','Terracotta':'#C4714F','Rose':'#F8BBD0',
+        'Taupe':'#B5A090','Ocre':'#CC7722','Rouge':'#C0392B','Marine':'#1B3A6B',
+      };
+      return p[nom] || '#D4C5B0';
+    }
+
+    /* =====================================================
+       FILTRES
+    ===================================================== */
+    function construireFiltres() {
+      const cats = ['Tous', ...new Set(tousProduits.map(p => p.categorie))];
+      const cont = document.getElementById('filtres');
+      cont.innerHTML = cats.map((c, i) =>
+        `${i===1?'<div class="filtres-sep"></div>':''}<button class="filtre-pill${c===filtreActif?' actif':''}" onclick="appliquerFiltre('${c}')">${c}</button>`
+      ).join('') + `<span class="compteur-produits" id="compteur">${produitsFiltres.length} articles</span>`;
+    }
+
+    function appliquerFiltre(cat) {
+      filtreActif = cat;
+      document.querySelectorAll('.filtre-pill').forEach(b => b.classList.toggle('actif', b.textContent===cat));
+      const q = document.getElementById('input-recherche').value.toLowerCase();
+      appliquerFiltres(q);
+    }
+
+    /* =====================================================
+       RECHERCHE
+    ===================================================== */
+    function filtrerProduits() {
+      appliquerFiltres(document.getElementById('input-recherche').value.toLowerCase());
+    }
+
+    function appliquerFiltres(q) {
+      produitsFiltres = tousProduits.filter(p => {
+        const matchCat = filtreActif==='Tous' || p.categorie===filtreActif;
+        const matchQ   = !q || p.nom.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.couleurs.some(c => c.toLowerCase().includes(q)) ||
+          p.categorie.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+      pageActuelle = 0;
+      document.getElementById('grille-produits').innerHTML = '';
+      chargerPage();
+    }
+
+    function toggleRecherche() {
+      const b = document.getElementById('barre-recherche');
+      const i = document.getElementById('input-recherche');
+      b.classList.toggle('visible');
+      if (b.classList.contains('visible')) i.focus();
+      else { i.value = ''; filtrerProduits(); }
+    }
+
+    /* =====================================================
+       MODAL — OUVRIR
     ===================================================== */
     function ouvrirModal(id) {
-      // Trouver le produit par son id
-      const produit = window.listeProduits.find(p => p.id === id);
-      if (!produit) return;
+      const p = tousProduits.find(x => x.id===id);
+      if (!p) return;
+      produitActuel = p;
 
-      produitActuel = produit; // Mémoriser le produit actuel
+      document.getElementById('modal-badge').textContent = p.categorie;
+      document.getElementById('modal-nom').textContent   = p.nom;
+      document.getElementById('modal-prix').textContent  = `${p.prix.toLocaleString('fr-FR')} ${p.devise}`;
+      document.getElementById('modal-desc').textContent  = p.description;
 
-      // Remplir la modal avec les infos du produit
-      document.getElementById('modal-img').src = produit.image;
-      document.getElementById('modal-img').alt = produit.nom;
-      document.getElementById('modal-badge').textContent = produit.categorie;
-      document.getElementById('modal-nom').textContent = produit.nom;
-      document.getElementById('modal-prix').textContent =
-        `${produit.prix.toLocaleString('fr-FR')} ${produit.devise}`;
-      document.getElementById('modal-desc').textContent = produit.description;
+      const img = document.getElementById('modal-img');
+      img.src = optimiserUrl(p.image, 700);
+      img.alt = p.nom;
 
-      // Générer les boutons de taille
-      const contTailles = document.getElementById('modal-tailles');
-      contTailles.innerHTML = '';
-      produit.tailles.forEach(taille => {
-        const btn = document.createElement('button');
-        btn.className = 'btn-taille';
-        btn.textContent = taille;
-        // Clic sur une taille : désélectionner les autres, sélectionner celle-ci
-        btn.onclick = () => selectionner(contTailles, btn);
-        contTailles.appendChild(btn);
-      });
+      document.getElementById('modal-tailles').innerHTML = p.tailles.map(t =>
+        `<button class="btn-option" onclick="selectionner(this)">${t}</button>`
+      ).join('');
 
-      // Générer les boutons de couleur
-      const contCouleurs = document.getElementById('modal-couleurs');
-      contCouleurs.innerHTML = '';
-      produit.couleurs.forEach(couleur => {
-        const btn = document.createElement('button');
-        btn.className = 'btn-couleur';
-        btn.textContent = couleur;
-        btn.onclick = () => selectionner(contCouleurs, btn);
-        contCouleurs.appendChild(btn);
-      });
+      document.getElementById('modal-couleurs').innerHTML = p.couleurs.map(c =>
+        `<button class="btn-couleur-opt" onclick="selectionner(this)">
+          <span style="width:12px;height:12px;border-radius:50%;background:${couleurCSS(c)};border:1px solid rgba(0,0,0,.1);display:inline-block;flex-shrink:0"></span>${c}
+        </button>`
+      ).join('');
 
-      // Cacher le message d'erreur
       document.getElementById('msg-erreur').classList.remove('visible');
+      document.getElementById('modal-contenu').scrollTop = 0;
+      document.getElementById('overlay').classList.add('ouverte');
+      document.body.classList.add('modal-ouverte');
 
-      // Afficher la modal
-      document.getElementById('overlay').classList.add('actif');
-      document.body.style.overflow = 'hidden'; // Empêcher le scroll
+      // Swipe to close (mobile)
+      const modal = document.getElementById('modal');
+      modal.ontouchstart = e => { touchStartY = e.touches[0].clientY; };
+      modal.ontouchend   = e => { if (e.changedTouches[0].clientY - touchStartY > 80) fermerModal(); };
     }
 
-    /* ====================================================
-       Sélectionner un bouton (taille ou couleur)
-       Retire la classe "selectionne" de tous les boutons
-       du même groupe, puis l'ajoute sur celui cliqué
-    ===================================================== */
-    function selectionner(conteneur, boutonClique) {
-      // Désélectionner tous les boutons du groupe
-      conteneur.querySelectorAll('button').forEach(b => b.classList.remove('selectionne'));
-      // Sélectionner le bouton cliqué
-      boutonClique.classList.add('selectionne');
+    function selectionner(btn) {
+      btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('selectionne'));
+      btn.classList.add('selectionne');
     }
 
-    /* ====================================================
-       Fermer la modal
-       Si l'utilisateur clique sur l'overlay (fond sombre),
-       on vérifie que c'est bien l'overlay et pas la modal
+    /* =====================================================
+       MODAL — FERMER
     ===================================================== */
-    function fermerModal(event) {
-      // Si "event" existe et que l'utilisateur a cliqué sur la modal elle-même,
-      // on ne ferme pas (pour ne pas fermer en cliquant sur le contenu)
-      if (event && event.target !== document.getElementById('overlay')) return;
-
-      document.getElementById('overlay').classList.remove('actif');
-      document.body.style.overflow = ''; // Réactiver le scroll
+    function fermerModal() {
+      document.getElementById('overlay').classList.remove('ouverte');
+      document.body.classList.remove('modal-ouverte');
       produitActuel = null;
     }
+    function fermerModalSiOverlay(e) { if (e.target===document.getElementById('overlay')) fermerModal(); }
+    document.addEventListener('keydown', e => { if (e.key==='Escape') fermerModal(); });
 
-    /* ====================================================
-       ÉTAPE 4 — CŒUR DU SYSTÈME WHATSAPP
-       Récupère les choix, construit le message, encode,
-       et ouvre WhatsApp avec le message pré-rempli
+    /* =====================================================
+       COMMANDER WHATSAPP
     ===================================================== */
     function commanderWhatsApp() {
       if (!produitActuel) return;
-
-      // ── Récupérer la taille sélectionnée ──
-      const btnTailleSelec = document.querySelector('#modal-tailles .selectionne');
-      // ── Récupérer la couleur sélectionnée ──
-      const btnCouleurSelec = document.querySelector('#modal-couleurs .selectionne');
-
-      // ── Validation : taille ET couleur obligatoires ──
-      if (!btnTailleSelec || !btnCouleurSelec) {
-        document.getElementById('msg-erreur').classList.add('visible');
-        return; // Stopper si incomplet
+      const t = document.querySelector('#modal-tailles .selectionne');
+      const c = document.querySelector('#modal-couleurs .selectionne');
+      if (!t || !c) {
+        const err = document.getElementById('msg-erreur');
+        err.classList.add('visible');
+        err.scrollIntoView({ behavior:'smooth', block:'nearest' });
+        return;
       }
-
-      // Cacher le message d'erreur si tout est OK
       document.getElementById('msg-erreur').classList.remove('visible');
 
-      // ── Récupérer les valeurs texte ──
-      const taille  = btnTailleSelec.textContent;
-      const couleur = btnCouleurSelec.textContent;
-      const nom     = produitActuel.nom;
-      const prix    = `${produitActuel.prix.toLocaleString('fr-FR')} ${produitActuel.devise}`;
+      const msg =
+`Bonjour Maison Élite ! 👋
 
-      /* ── Construire le message WhatsApp ──
-         On utilise \n pour les sauts de ligne
-         encodeURIComponent() transforme les caractères
-         spéciaux pour qu'ils passent dans une URL
-         Exemple : espace → %20, é → %C3%A9
-      */
-      const message = `Bonjour, je suis intéressé(e) par ce produit :
+Je souhaite commander ce produit :
 
-Nom : ${nom}
-Prix : ${prix}
-Taille : ${taille}
-Couleur : ${couleur}
+🏷️ *${produitActuel.nom}*
+💰 Prix : ${produitActuel.prix.toLocaleString('fr-FR')} ${produitActuel.devise}
+📐 Taille : ${t.textContent.trim()}
+🎨 Couleur : ${c.textContent.trim()}
 
-Merci de me confirmer la disponibilité. 🙏`;
+Merci de confirmer la disponibilité et les modalités de livraison. 🙏`;
 
-      // ── Encoder le message ──
-      const messageEncode = encodeURIComponent(message);
-
-      // ── Construire le lien WhatsApp ──
-      const lienWhatsApp = `https://wa.me/${WHATSAPP_NUMERO}?text=${messageEncode}`;
-
-      // ── Ouvrir WhatsApp dans un nouvel onglet ──
-      window.open(lienWhatsApp, '_blank');
+      window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
     }
 
-    /* ====================================================
-       BOUTON FLOTTANT — Message général
-       Pointe vers WhatsApp avec un message d'accueil
+    /* =====================================================
+       BOUTON FLOTTANT
     ===================================================== */
-    function configurerBoutonFlottant() {
-      const messageGeneral = `Bonjour Maison Élite ! 👋\nJe souhaite en savoir plus sur votre collection. Pouvez-vous m'aider ?`;
-      const lien = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(messageGeneral)}`;
+    function configFlottant() {
+      const msg = `Bonjour Maison Élite ! 👋\nJe souhaite en savoir plus sur votre collection.`;
+      const lien = `https://wa.me/${CONFIG.WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`;
       document.getElementById('wa-flottant').href = lien;
+      document.getElementById('hero-wa-btn').href = lien;
     }
 
-    /* ====================================================
-       Fermer la modal avec la touche Échap (Escape)
+    /* =====================================================
+       SERVICE WORKER
     ===================================================== */
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') fermerModal();
-    });
+    if ('serviceWorker' in navigator)
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
 
-    /* ====================================================
-       LANCEMENT AU CHARGEMENT DE LA PAGE
+    /* =====================================================
+       SESSION ADMIN
     ===================================================== */
-    document.addEventListener('DOMContentLoaded', () => {
-      chargerProduits();
-      configurerBoutonFlottant();
-    });
+    if (sessionStorage.getItem('elite_admin') === 'ok')
+      document.getElementById('nav-admin').style.display = 'flex';
 
+    /* =====================================================
+       DONNÉES DE SECOURS
+    ===================================================== */
+    const DEFAUT = [
+      {id:1,nom:"T-Shirt Éclat",   prix:10000,devise:"FCFA",description:"T-shirt en coton premium, coupe moderne et confortable.",image:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600",tailles:["XS","S","M","L","XL"],couleurs:["Noir","Blanc","Beige"],categorie:"Hauts"},
+      {id:2,nom:"Robe Soleil",     prix:25000,devise:"FCFA",description:"Robe fluide et élégante, parfaite pour toutes occasions.",image:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600",tailles:["S","M","L"],couleurs:["Jaune","Corail","Blanc"],categorie:"Robes"},
+      {id:3,nom:"Pantalon Élite",  prix:18000,devise:"FCFA",description:"Pantalon taille haute, coupe droite et raffinée.",image:"https://images.unsplash.com/photo-1594938298603-c8148c4b4505?w=600",tailles:["S","M","L","XL"],couleurs:["Noir","Kaki","Bleu Marine"],categorie:"Bas"},
+      {id:4,nom:"Veste Prestige",  prix:35000,devise:"FCFA",description:"Veste structurée, finitions impeccables, style business-casual.",image:"https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600",tailles:["S","M","L","XL"],couleurs:["Camel","Noir","Gris"],categorie:"Vestes"},
+      {id:5,nom:"Jupe Liberté",    prix:14000,devise:"FCFA",description:"Jupe mi-longue avec fentes latérales, mouvement naturel.",image:"https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600",tailles:["XS","S","M","L"],couleurs:["Bordeaux","Noir","Vert Forêt"],categorie:"Bas"},
+      {id:6,nom:"Blazer Signature",prix:42000,devise:"FCFA",description:"Blazer iconique, double boutonnage, silhouette affirmée.",image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600",tailles:["S","M","L"],couleurs:["Ivoire","Noir","Bleu Nuit"],categorie:"Vestes"},
+    ];
+
+    /* =====================================================
+       DÉMARRAGE
+    ===================================================== */
+    configFlottant();
+    chargerProduits();
   </script>
-
 </body>
 </html>
