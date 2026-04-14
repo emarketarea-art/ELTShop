@@ -1,0 +1,11 @@
+# =====================================================
+# NETLIFY REDIRECTS — MAISON ÉLITE
+# Ce fichier doit être à la RACINE de votre dossier
+# =====================================================
+
+# L'URL secrète de l'admin (changez "gestion-elite-k9x2" par votre code secret)
+# Exemple : votre-site.netlify.app/gestion-elite-k9x2
+/gestion-elite-k9x2   /admin.html   200
+
+# Bloquer l'accès direct à /admin.html → redirige vers la page d'accueil
+/admin.html           /             302
