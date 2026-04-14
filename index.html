@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="ELTShop — Boutique de Vêtement. Commandez sur WhatsApp." />
+  <meta name="description" content="ELTShop — Boutique de vêtement. Commandez sur WhatsApp." />
   <title>ELTShop — Collection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -140,7 +140,24 @@
     /* ── MODAL DESKTOP ── */
     .overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(20,15,10,.65);backdrop-filter:blur(4px)}
     .overlay.ouverte{display:flex;align-items:center;justify-content:center;padding:20px}
-    .modal{width:min(860px,92vw);max-height:88vh;background:#fff;border-radius:20px;overflow:hidden;display:grid;grid-template-columns:45% 55%;animation:modalEntree .4s var(--ease)}
+    .modal{width:min(860px,92vw);max-height:88vh;background:#fff;border-radius:20px;overflow:hidden;display:grid;grid-template-columns:42% 58%;animation:modalEntree .4s var(--ease)}
+
+    /* ── Colonne droite (desktop) : flex pour coller le bouton WA en bas ── */
+    @media(min-width:768px){
+      .modal{
+        /* La colonne image est auto, la colonne droite est une flex column */
+        grid-template-rows: 1fr;
+      }
+      /* Wrapper invisible qui enveloppe contenu + bas dans la colonne droite */
+      .modal-colonne-droite{
+        display:flex;
+        flex-direction:column;
+        max-height:88vh;
+        overflow:hidden;
+      }
+      .modal-contenu{flex:1;overflow-y:auto;min-height:0}
+      .modal-bas{flex-shrink:0}
+    }
     @keyframes modalEntree{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 
     /* ── MODAL MOBILE : bottom-sheet ── */
@@ -248,7 +265,7 @@
     <div class="hero-texte">
       <span class="hero-tag">Nos Collections</span>
       <h1>Le style,<br><em>au quotidien</em></h1>
-      <p class="hero-sous">Tout ce qu'il vous faut en matière vestimentaire. Commandez en quelques secondes, directement sur WhatsApp.</p>
+      <p class="hero-sous">tout ce qu'il faut en matière vestimentaire. Commandez en quelques secondes, directement sur WhatsApp.</p>
       <div class="hero-ctas">
         <a href="#catalogue" class="btn-primaire">Voir la collection</a>
         <a href="#" class="btn-secondaire" id="hero-wa-btn">Commander →</a>
@@ -299,6 +316,7 @@
     <div class="visionneuse-info">Appuyez n'importe où pour fermer</div>
   </div>
 
+      <div class="modal-colonne-droite">
       <div class="modal-contenu" id="modal-contenu">
         <div>
           <span class="modal-badge" id="modal-badge"></span>
@@ -314,7 +332,8 @@
           <p class="section-label">Choisir une couleur</p>
           <div class="groupe-choix" id="modal-couleurs"></div>
         </div>
-        <div style="height:120px;flex-shrink:0"></div>
+        <!-- Espace bas (mobile uniquement) -->
+        <div style="height:20px;flex-shrink:0"></div>
       </div>
 
       <div class="modal-bas">
@@ -324,6 +343,7 @@
           Commander sur WhatsApp
         </button>
       </div>
+      </div><!-- fin colonne droite -->
     </div>
   </div>
 
@@ -336,7 +356,7 @@
   <footer>
     <div>
       <span class="footer-logo">ELTShop</span>
-      <p>Boutique de Vêtement · Livraison rapide</p>
+      <p>Boutique de vêtement · Livraison rapide</p>
       <p style="margin-top:6px">© 2026 ELTShop · Tous droits réservés</p>
     </div>
     <div style="text-align:right">
