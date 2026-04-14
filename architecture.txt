@@ -1,0 +1,6 @@
+Votre dossier/
+├── index.html
+├── admin.html
+├── products.json
+├── sw.js
+└── _redirects   ← OBLIGATOIRE, à la racine
