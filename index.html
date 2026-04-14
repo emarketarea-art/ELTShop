@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="ELTShop — Boutique de vêtement. Commandez sur WhatsApp." />
+  <meta name="description" content="ELTShop — Boutique de Vêtement. Commandez sur WhatsApp." />
   <title>ELTShop — Collection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -263,9 +263,9 @@
 
   <section class="hero">
     <div class="hero-texte">
-      <span class="hero-tag">Nos Collections</span>
+      <span class="hero-tag">Nos collections</span>
       <h1>Le style,<br><em>au quotidien</em></h1>
-      <p class="hero-sous">tout ce qu'il faut en matière vestimentaire. Commandez en quelques secondes, directement sur WhatsApp.</p>
+      <p class="hero-sous">Tout ce qu'il vous faut en matière vestimentaire. Commandez en quelques secondes, directement sur WhatsApp.</p>
       <div class="hero-ctas">
         <a href="#catalogue" class="btn-primaire">Voir la collection</a>
         <a href="#" class="btn-secondaire" id="hero-wa-btn">Commander →</a>
@@ -356,7 +356,7 @@
   <footer>
     <div>
       <span class="footer-logo">ELTShop</span>
-      <p>Boutique de vêtement · Livraison rapide</p>
+      <p>Boutique de mode premium · Livraison rapide</p>
       <p style="margin-top:6px">© 2026 ELTShop · Tous droits réservés</p>
     </div>
     <div style="text-align:right">
@@ -718,6 +718,9 @@
       }
       document.getElementById('msg-erreur').classList.remove('visible');
 
+      // URL de l'image nettoyée (sans paramètres Unsplash pour lisibilité)
+      const imageUrl = produitActuel.image.split('?')[0];
+
       const msg =
 `Bonjour ELTShop ! 👋
 
@@ -727,6 +730,7 @@ Je souhaite commander ce produit :
 💰 Prix : ${produitActuel.prix.toLocaleString('fr-FR')} ${produitActuel.devise}
 📐 Taille : ${t.textContent.trim()}
 🎨 Couleur : ${c.textContent.trim()}
+🖼️ Photo : ${imageUrl}
 
 Merci de confirmer la disponibilité et les modalités de livraison. 🙏`;
 
@@ -737,7 +741,7 @@ Merci de confirmer la disponibilité et les modalités de livraison. 🙏`;
        BOUTON FLOTTANT
     ===================================================== */
     function configFlottant() {
-      const msg = `Bonjour Maison Élite ! 👋\nJe souhaite en savoir plus sur votre collection.`;
+      const msg = `Bonjour ELTShop ! 👋\nJe souhaite en savoir plus sur votre collection.`;
       const lien = `https://wa.me/${CONFIG.WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`;
       document.getElementById('wa-flottant').href = lien;
       document.getElementById('hero-wa-btn').href = lien;
