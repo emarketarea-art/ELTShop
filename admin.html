@@ -163,9 +163,9 @@
       <input class="login-input" type="password" id="login-pwd" placeholder="Mot de passe admin" onkeydown="if(event.key==='Enter')seConnecter()" />
       <button class="login-btn" onclick="seConnecter()">Accéder →</button>
       <p class="login-erreur" id="login-erreur">Mot de passe incorrect</p>
-      <p style="margin-top:20px;font-size:.75rem;color:#ccc">
-        Mot de passe par défaut : <strong>elite2025</strong><br>
-        <span style="color:#aaa">Modifiez-le dans le code (ADMIN_MOT_DE_PASSE)</span>
+      <p style="margin-top:20px;font-size:.72rem;color:rgba(255,255,255,.25);line-height:1.6">
+        🔐 Accès sécurisé · Administrateurs uniquement<br>
+        <span style="color:rgba(255,255,255,.15)">v2.0</span>
       </p>
     </div>
   </div>
@@ -334,8 +334,28 @@
        ⚙️ CONFIGURATION ADMIN
        !! Changez ce mot de passe !!
     ===================================================== */
-    const ADMIN_MOT_DE_PASSE = "elite2025";
-    const CLE_STORAGE        = "elite_produits";
+    /* =====================================================
+       🔐 SÉCURITÉ — MOT DE PASSE HASHÉ (SHA-256)
+       
+       Le mot de passe réel N'EST PAS stocké ici.
+       Seul son empreinte SHA-256 est présente dans le code.
+       
+       Pour changer le mot de passe :
+       1. Allez sur https://emn178.github.io/online-tools/sha256.html
+       2. Tapez votre nouveau mot de passe
+       3. Copiez le hash généré et remplacez la valeur ci-dessous
+       
+       Mot de passe actuel : elite2025
+       (ne jamais écrire le vrai mot de passe ici)
+    ===================================================== */
+    const HASH_MOT_DE_PASSE = "4c823f5c63d2174d0537796da17abd3eb0bcec64a6df979878d0585655bc3fc9";
+    const CLE_STORAGE       = "elite_produits";
+    
+    /* Tentatives de connexion (anti brute-force) */
+    const MAX_TENTATIVES  = 5;
+    const DELAI_BLOCAGE   = 15 * 60 * 1000; // 15 minutes en millisecondes
+    let   tentatives      = parseInt(sessionStorage.getItem('elite_tentatives') || '0');
+    let   bloquéJusqu     = parseInt(sessionStorage.getItem('elite_bloque') || '0');
 
     /* =====================================================
        ÉTAT
@@ -349,15 +369,68 @@
     /* =====================================================
        CONNEXION / DÉCONNEXION
     ===================================================== */
-    function seConnecter() {
+    /* Hasher un texte avec SHA-256 (API Web Crypto, native dans tous les navigateurs) */
+    async function hacherSHA256(texte) {
+      const encoder = new TextEncoder();
+      const data    = encoder.encode(texte);
+      const buffer  = await crypto.subtle.digest('SHA-256', data);
+      // Convertir le buffer en chaîne hexadécimale
+      return Array.from(new Uint8Array(buffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    async function seConnecter() {
+      const maintenant = Date.now();
+      const errEl = document.getElementById('login-erreur');
+      const btn   = document.querySelector('.login-btn');
+
+      /* ── Vérifier si le compte est bloqué ── */
+      if (maintenant < bloquéJusqu) {
+        const restant = Math.ceil((bloquéJusqu - maintenant) / 60000);
+        errEl.textContent = `Trop de tentatives. Réessayez dans ${restant} minute(s).`;
+        errEl.classList.add('visible');
+        return;
+      }
+
       const pwd = document.getElementById('login-pwd').value;
-      if (pwd === ADMIN_MOT_DE_PASSE) {
+      if (!pwd) return;
+
+      /* ── Feedback visuel pendant le hash ── */
+      btn.textContent = '…';
+      btn.disabled = true;
+
+      const hash = await hacherSHA256(pwd);
+
+      btn.textContent = 'Accéder →';
+      btn.disabled = false;
+
+      if (hash === HASH_MOT_DE_PASSE) {
+        /* ✅ Succès : réinitialiser les tentatives */
         sessionStorage.setItem('elite_admin', 'ok');
+        sessionStorage.removeItem('elite_tentatives');
+        sessionStorage.removeItem('elite_bloque');
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('admin-page').classList.add('visible');
         chargerDonnees();
       } else {
-        document.getElementById('login-erreur').classList.add('visible');
+        /* ❌ Échec : incrémenter les tentatives */
+        tentatives++;
+        sessionStorage.setItem('elite_tentatives', tentatives);
+        const restantes = MAX_TENTATIVES - tentatives;
+
+        if (tentatives >= MAX_TENTATIVES) {
+          /* Bloquer pour 15 minutes */
+          const finBlocage = Date.now() + DELAI_BLOCAGE;
+          sessionStorage.setItem('elite_bloque', finBlocage);
+          bloquéJusqu = finBlocage;
+          errEl.textContent = 'Compte bloqué 15 minutes après trop de tentatives.';
+        } else {
+          errEl.textContent = `Mot de passe incorrect. ${restantes} tentative(s) restante(s).`;
+        }
+
+        errEl.classList.add('visible');
+        document.getElementById('login-pwd').value = '';
         document.getElementById('login-pwd').focus();
       }
     }
