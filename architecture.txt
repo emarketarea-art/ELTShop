@@ -3,4 +3,4 @@ Votre dossier/
 ├── admin.html
 ├── products.json
 ├── sw.js
-└── _redirects   ← OBLIGATOIRE, à la racine
+└── _redirects
