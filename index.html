@@ -94,8 +94,9 @@
     .carte{background:var(--carte);border-radius:var(--rayon);overflow:hidden;box-shadow:var(--ombre);cursor:pointer;opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease,box-shadow .35s ease}
     .carte.visible{opacity:1;transform:translateY(0)}
     .carte:hover{box-shadow:var(--ombre-f);transform:translateY(-6px)}
-    .carte-image{height:290px;overflow:hidden;position:relative;background:var(--pierre)}
-    .carte-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease),opacity .4s ease;opacity:0}
+    .carte-image{height:320px;overflow:hidden;position:relative;background:var(--pierre)}
+    @media(max-width:480px){.carte-image{height:260px}} /* un peu moins haut sur très petit écran */
+    .carte-image img{width:100%;height:100%;object-fit:cover;object-position:center 20%;transition:transform .6s var(--ease),opacity .4s ease;opacity:0}
     .carte-image img.chargee{opacity:1}
     .carte:hover .carte-image img{transform:scale(1.06)}
     .badge-cat{position:absolute;top:12px;left:12px;background:rgba(20,15,10,.75);backdrop-filter:blur(6px);color:var(--or);font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:100px;border:1px solid rgba(181,137,63,.3)}
@@ -132,8 +133,23 @@
     @media(max-width:767px){.modal-handle{display:block}}
 
     .modal-image-zone{position:relative;overflow:hidden;background:var(--pierre)}
-    @media(max-width:767px){.modal-image-zone{height:260px;flex-shrink:0}}
-    .modal-image-zone img{width:100%;height:100%;object-fit:cover;object-position:center top}
+
+    /* ── Image desktop : hauteur 100% de la modal ── */
+    @media(min-width:768px){
+      .modal-image-zone{min-height:420px}
+    }
+
+    /* ── Image mobile : hauteur proportionnelle à l'écran,
+       ni trop petite ni trop grande, avec zoom-out par défaut ── */
+    @media(max-width:767px){
+      .modal-image-zone{
+        height: clamp(260px, 60vw, 360px); /* entre 260 et 360px selon l'écran */
+        flex-shrink:0;
+      }
+    }
+
+    /* object-position est overridé dynamiquement par JS selon la catégorie */
+    .modal-image-zone img{width:100%;height:100%;object-fit:cover;object-position:center center}
 
     .btn-fermer{position:absolute;top:14px;right:14px;width:36px;height:36px;background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .2s}
     .btn-fermer:hover{background:rgba(255,255,255,.2)}
@@ -192,7 +208,7 @@
 
   <header>
     <nav class="nav">
-      <a href="#" class="nav-logo">ElTShop</a>
+      <a href="#" class="nav-logo">Maison Élite</a>
       <div class="nav-droite">
         <button class="nav-btn" onclick="toggleRecherche()" title="Rechercher">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -286,7 +302,7 @@
 
   <footer>
     <div>
-      <span class="footer-logo">ELTShop</span>
+      <span class="footer-logo">Maison Élite</span>
       <p>Boutique de mode premium · Livraison rapide</p>
       <p style="margin-top:6px">© 2025 Maison Élite · Tous droits réservés</p>
     </div>
@@ -556,6 +572,16 @@
       const img = document.getElementById('modal-img');
       img.src = optimiserUrl(p.image, 700);
       img.alt = p.nom;
+
+      // Cadrage adapté à la catégorie pour éviter les coupes disgracieuses
+      // Modifiez ces valeurs selon vos photos
+      const cadrage = {
+        'Hauts':   'center 20%',  // T-shirts : montrer le haut du corps
+        'Robes':   'center top',  // Robes : prioriser le haut
+        'Vestes':  'center 15%',  // Vestes : montrer le col et épaules
+        'Bas':     'center 40%',  // Pantalons/jupes : centre
+      };
+      img.style.objectPosition = cadrage[p.categorie] || 'center 25%';
 
       document.getElementById('modal-tailles').innerHTML = p.tailles.map(t =>
         `<button class="btn-option" onclick="selectionner(this)">${t}</button>`
