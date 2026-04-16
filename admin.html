@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Maison Élite — Boutique de Vêtement. Commandez sur WhatsApp." />
-  <title>ELTShop — Collection</title>
+  <meta name="description" content="Maison Élite — Boutique de mode premium. Commandez sur WhatsApp." />
+  <title>MAISON ÉLITE — Collection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -276,7 +276,7 @@
   <!-- ── NAVIGATION ── -->
   <header>
     <nav class="nav">
-      <a href="index.html" class="nav-logo">ELTShop</a>
+      <a href="index.html" class="nav-logo">Maison Élite</a>
       <div class="nav-droite">
         <button class="nav-btn" onclick="toggleRecherche()" title="Rechercher">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -302,9 +302,9 @@
   <!-- ── HERO ── -->
   <section class="hero">
     <div class="hero-texte">
-      <span class="hero-tag">Nos Collections</span>
+      <span class="hero-tag">Nouvelle Collection</span>
       <h1>L'élégance,<br><em>réinventée</em></h1>
-      <p class="hero-sous">tout ce qu'il vous faut en matière vestimentaire. Commandez en quelques secondes, directement sur WhatsApp.</p>
+      <p class="hero-sous">Des pièces d'exception pensées pour chaque moment. Commandez en quelques secondes, directement sur WhatsApp.</p>
       <div class="hero-ctas">
         <a href="#catalogue" class="btn-primaire">Voir la collection</a>
         <a href="#" class="btn-secondaire" id="hero-wa-btn">Commander →</a>
@@ -451,9 +451,9 @@
 
   <footer>
     <div>
-      <span class="footer-logo">ELTShop</span>
-      <p>Boutique de Vêtement · Livraison rapide</p>
-      <p style="margin-top:6px">© 2025 ELTShop · Tous droits réservés</p>
+      <span class="footer-logo">Maison Élite</span>
+      <p>Boutique de mode premium · Livraison rapide</p>
+      <p style="margin-top:6px">© 2025 Maison Élite · Tous droits réservés</p>
     </div>
     <div class="footer-liens">
       <a href="analytics.html" class="footer-lien" id="footer-analytics" style="display:none">
@@ -472,7 +472,7 @@
        ⚙️ CONFIGURATION
     ======================================================= */
     const CONFIG = {
-      WHATSAPP_NUMERO: "22891183716",
+      WHATSAPP_NUMERO: "22891234567",
       ITEMS_PAR_PAGE:  12,
       CLE_PRODUITS:    "elite_produits",
       CLE_PANIER:      "elite_panier",
@@ -1053,7 +1053,7 @@ Merci de confirmer la disponibilité et les modalités de livraison. 🙏`;
       const devise = panier[0]?.devise || 'FCFA';
 
       const msg =
-`Bonjour ELTShop ! 👋
+`Bonjour Maison Élite ! 👋
 
 Je souhaite commander ${panier.length} article${panier.length>1?'s':''} :
 
