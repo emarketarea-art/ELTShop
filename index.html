@@ -116,18 +116,49 @@
     /* ── MODAL DESKTOP ── */
     .overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(20,15,10,.65);backdrop-filter:blur(4px)}
     .overlay.ouverte{display:flex;align-items:center;justify-content:center;padding:20px}
-    .modal{width:min(880px,92vw);max-height:88vh;background:#fff;border-radius:20px;overflow:hidden;display:grid;grid-template-columns:42% 58%;animation:modalEntree .4s var(--ease)}
+    /* ── MODAL DESKTOP ── */
+    .modal{
+      width:min(880px,92vw);
+      /* height fixe = la modal occupe exactement 88vh, ni plus ni moins */
+      height:88vh;
+      max-height:88vh;
+      background:#fff;
+      border-radius:20px;
+      overflow:hidden;
+      /* grid-template-rows:1fr force la ligne unique à remplir toute la hauteur */
+      display:grid;
+      grid-template-columns:42% 58%;
+      grid-template-rows:1fr;
+      animation:modalEntree .4s var(--ease);
+    }
     @keyframes modalEntree{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 
     /* ── MODAL MOBILE : bottom-sheet ── */
     @media(max-width:767px){
       .overlay.ouverte{align-items:flex-end;padding:0}
-      .modal{width:100%;max-height:93dvh;border-radius:24px 24px 0 0;grid-template-columns:1fr;display:flex;flex-direction:column;animation:bottomSheet .45s var(--ease)}
+      .modal{
+        width:100%;
+        height:auto;
+        max-height:93dvh;
+        border-radius:24px 24px 0 0;
+        grid-template-columns:1fr;
+        grid-template-rows:auto 1fr;
+        display:flex;
+        flex-direction:column;
+        animation:bottomSheet .45s var(--ease);
+      }
       @keyframes bottomSheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
-      @media(min-width:768px){.modal-colonne-droite{display:flex;flex-direction:column;max-height:88vh;overflow:hidden}.modal-contenu{flex:1;overflow-y:auto;min-height:0}.modal-bas{flex-shrink:0}}
     }
+
+    /* Colonne droite desktop = flex column avec scroll interne */
     @media(min-width:768px){
-      .modal-colonne-droite{display:flex;flex-direction:column;max-height:88vh;overflow:hidden}
+      .modal-colonne-droite{
+        display:flex;
+        flex-direction:column;
+        height:100%;          /* remplit exactement la hauteur de la cellule grid */
+        overflow:hidden;
+        min-height:0;
+      }
       .modal-contenu{flex:1;overflow-y:auto;min-height:0}
       .modal-bas{flex-shrink:0}
     }
@@ -135,10 +166,28 @@
     .modal-handle{display:none;width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 0;flex-shrink:0}
     @media(max-width:767px){.modal-handle{display:block}}
 
-    .modal-image-zone{position:relative;overflow:hidden;background:var(--pierre)}
-    @media(min-width:768px){.modal-image-zone{min-height:420px}}
-    @media(max-width:767px){.modal-image-zone{height:clamp(260px,60vw,360px);flex-shrink:0}}
-    .modal-image-zone img{width:100%;height:100%;object-fit:cover;object-position:center center;cursor:zoom-in}
+    /* Zone image gauche : remplit TOUTE la cellule grid, jamais plus */
+    .modal-image-zone{
+      position:relative;
+      overflow:hidden;
+      background:var(--pierre);
+    }
+    @media(min-width:768px){
+      .modal-image-zone{
+        height:100%;   /* = hauteur de la cellule grid = hauteur de la modal */
+        min-height:0;  /* annule tout min-height implicite */
+      }
+    }
+    @media(max-width:767px){
+      .modal-image-zone{height:clamp(260px,60vw,360px);flex-shrink:0}
+    }
+    .modal-image-zone img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center center;
+      cursor:zoom-in;
+    }
 
     .btn-fermer{position:absolute;top:14px;right:14px;width:36px;height:36px;background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .2s}
     .btn-fermer:hover{background:rgba(255,255,255,.2)}
