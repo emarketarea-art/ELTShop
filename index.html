@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Maison Élite — Boutique de vêtement. Commandez sur WhatsApp." />
-  <title>ELTShop — Collection</title>
+  <meta name="description" content="Maison Élite — Boutique de mode premium. Commandez sur WhatsApp." />
+  <title>MAISON ÉLITE — Collection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -151,6 +151,33 @@
     .btn-partager:hover{background:rgba(255,255,255,.15)}
     .btn-partager svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
+    /* ── GALERIE MINIATURES ── */
+    .galerie-strip{
+      position:absolute;
+      bottom:0; left:0; right:0;
+      display:flex;
+      gap:6px;
+      padding:10px 12px;
+      background:linear-gradient(to top, rgba(20,15,10,.7) 0%, transparent 100%);
+      overflow-x:auto;
+      scrollbar-width:none;
+      z-index:4;
+    }
+    .galerie-strip::-webkit-scrollbar{display:none}
+    .galerie-strip.une-seule-image{display:none} /* masquer si 1 seule image */
+    .galerie-thumb{
+      width:52px; height:52px;
+      object-fit:cover;
+      border-radius:6px;
+      cursor:pointer;
+      border:2px solid transparent;
+      flex-shrink:0;
+      opacity:.7;
+      transition:opacity .2s, border-color .2s, transform .2s;
+    }
+    .galerie-thumb:hover{opacity:1; transform:translateY(-2px)}
+    .galerie-thumb.active{border-color:#fff; opacity:1;}
+
     .modal-contenu{padding:28px 28px 0;overflow-y:auto;display:flex;flex-direction:column;gap:18px;-webkit-overflow-scrolling:touch}
     @media(max-width:767px){.modal-contenu{padding:20px 20px 0;flex:1}}
     .modal-badge{font-size:.65rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--or);display:block;margin-bottom:8px}
@@ -276,7 +303,7 @@
   <!-- ── NAVIGATION ── -->
   <header>
     <nav class="nav">
-      <a href="index.html" class="nav-logo">ELTShop</a>
+      <a href="index.html" class="nav-logo">Maison Élite</a>
       <div class="nav-droite">
         <button class="nav-btn" onclick="toggleRecherche()" title="Rechercher">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -302,9 +329,9 @@
   <!-- ── HERO ── -->
   <section class="hero">
     <div class="hero-texte">
-      <span class="hero-tag">Nos Collections</span>
-      <h1>Le style,<br><em>au quotidien</em></h1>
-      <p class="hero-sous">Tout ce qu'il vous faut en matière vestimentaire. Commandez en quelques secondes, directement sur WhatsApp.</p>
+      <span class="hero-tag">Nouvelle Collection</span>
+      <h1>L'élégance,<br><em>réinventée</em></h1>
+      <p class="hero-sous">Des pièces d'exception pensées pour chaque moment. Commandez en quelques secondes, directement sur WhatsApp.</p>
       <div class="hero-ctas">
         <a href="#catalogue" class="btn-primaire">Voir la collection</a>
         <a href="#" class="btn-secondaire" id="hero-wa-btn">Commander →</a>
@@ -342,6 +369,10 @@
       <div class="modal-image-zone">
         <button class="btn-fermer" onclick="fermerModal()" aria-label="Fermer">✕</button>
         <img id="modal-img" src="" alt="" onclick="ouvrirVisionneuse()" />
+
+        <!-- Bande de miniatures galerie -->
+        <div class="galerie-strip" id="galerie-strip"></div>
+
         <button class="btn-partager" onclick="partagerProduit()">
           <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
           Partager
@@ -451,9 +482,9 @@
 
   <footer>
     <div>
-      <span class="footer-logo">ELTShop</span>
-      <p>Boutique de vêtement · Livraison rapide</p>
-      <p style="margin-top:6px">© 2026 ELTShop · Tous droits réservés</p>
+      <span class="footer-logo">Maison Élite</span>
+      <p>Boutique de mode premium · Livraison rapide</p>
+      <p style="margin-top:6px">© 2025 Maison Élite · Tous droits réservés</p>
     </div>
     <div class="footer-liens">
       <a href="analytics.html" class="footer-lien" id="footer-analytics" style="display:none">
@@ -472,7 +503,7 @@
        ⚙️ CONFIGURATION
     ======================================================= */
     const CONFIG = {
-      WHATSAPP_NUMERO: "22891183716",
+      WHATSAPP_NUMERO: "22891234567",
       ITEMS_PAR_PAGE:  12,
       CLE_PRODUITS:    "elite_produits",
       CLE_PANIER:      "elite_panier",
@@ -769,15 +800,16 @@
     /* =======================================================
        MODAL — OUVRIR
     ======================================================= */
+    /* Index de l'image active dans la galerie */
+    let indexImageActif = 0;
+
     function ouvrirModal(id) {
       const p = tousProduits.find(x => x.id===id);
       if (!p) return;
       produitActuel = p;
+      indexImageActif = 0;
 
-      // Enregistrer la vue
       enregistrerVue(id);
-
-      // Mettre à jour le hash URL pour le partage
       history.replaceState(null, '', `#produit-${id}`);
 
       document.getElementById('modal-badge').textContent = p.categorie;
@@ -785,11 +817,29 @@
       document.getElementById('modal-prix').textContent  = `${p.prix.toLocaleString('fr-FR')} ${p.devise}`;
       document.getElementById('modal-desc').textContent  = p.description;
 
-      const img = document.getElementById('modal-img');
-      img.src = optimiserUrl(p.image, 700);
-      img.alt = p.nom;
-      const cadrage = {'Hauts':'center 20%','Robes':'center top','Vestes':'center 15%','Bas':'center 40%'};
-      img.style.objectPosition = cadrage[p.categorie] || 'center 25%';
+      // Construire la liste complète des images (images[] ou fallback sur image)
+      const listeImages = (p.images && p.images.length > 0) ? p.images : [p.image];
+
+      // Afficher la première image
+      afficherImageGalerie(listeImages, 0, p.categorie);
+
+      // Construire les miniatures
+      const strip = document.getElementById('galerie-strip');
+      if (listeImages.length <= 1) {
+        strip.className = 'galerie-strip une-seule-image';
+        strip.innerHTML = '';
+      } else {
+        strip.className = 'galerie-strip';
+        strip.innerHTML = listeImages.map((url, i) => `
+          <img
+            class="galerie-thumb${i===0?' active':''}"
+            src="${optimiserUrl(url, 150)}"
+            alt="${p.nom} photo ${i+1}"
+            onclick="changerImage(${i})"
+            onerror="this.style.display='none'"
+          />`
+        ).join('');
+      }
 
       document.getElementById('modal-tailles').innerHTML = p.tailles.map(t =>
         `<button class="btn-option" onclick="selectionner(this)">${t}</button>`
@@ -811,6 +861,30 @@
       modal.ontouchend   = e => { if (e.changedTouches[0].clientY - touchStartY > 80) fermerModal(); };
     }
 
+    /* Afficher une image par son index dans la liste */
+    function afficherImageGalerie(liste, index, categorie) {
+      const img = document.getElementById('modal-img');
+      img.src   = optimiserUrl(liste[index], 800);
+      img.alt   = produitActuel?.nom || '';
+      const cadrage = {'Hauts':'center 20%','Robes':'center top','Vestes':'center 15%','Bas':'center 40%'};
+      img.style.objectPosition = cadrage[categorie] || 'center 25%';
+      indexImageActif = index;
+    }
+
+    /* Changer l'image active (appelé par clic sur miniature) */
+    function changerImage(index) {
+      if (!produitActuel) return;
+      const liste = (produitActuel.images && produitActuel.images.length > 0)
+        ? produitActuel.images : [produitActuel.image];
+
+      afficherImageGalerie(liste, index, produitActuel.categorie);
+
+      // Mettre à jour la miniature active
+      document.querySelectorAll('.galerie-thumb').forEach((t, i) => {
+        t.classList.toggle('active', i === index);
+      });
+    }
+
     function selectionner(btn) {
       btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('selectionne'));
       btn.classList.add('selectionne');
@@ -823,16 +897,20 @@
       document.getElementById('overlay').classList.remove('ouverte');
       document.body.classList.remove('modal-ouverte');
       produitActuel = null;
+      indexImageActif = 0;
       history.replaceState(null, '', window.location.pathname);
     }
     function fermerModalSiOverlay(e) { if (e.target===document.getElementById('overlay')) fermerModal(); }
 
     /* =======================================================
-       VISIONNEUSE PLEIN ÉCRAN
+       VISIONNEUSE PLEIN ÉCRAN — ouvre l'image active de la galerie
     ======================================================= */
     function ouvrirVisionneuse() {
       if (!produitActuel) return;
-      document.getElementById('visionneuse-img').src = optimiserUrl(produitActuel.image, 1200);
+      const liste = (produitActuel.images && produitActuel.images.length > 0)
+        ? produitActuel.images : [produitActuel.image];
+      // Afficher l'image actuellement sélectionnée en plein écran
+      document.getElementById('visionneuse-img').src = optimiserUrl(liste[indexImageActif], 1400);
       document.getElementById('visionneuse-img').alt = produitActuel.nom;
       document.getElementById('visionneuse').classList.add('ouverte');
       document.body.style.overflow = 'hidden';
