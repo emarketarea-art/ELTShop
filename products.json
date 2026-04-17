@@ -4,8 +4,13 @@
     "nom": "T-Shirt Éclat",
     "prix": 10000,
     "devise": "FCFA",
-    "description": "T-shirt en coton premium, coupe moderne et confortable.",
-    "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
+    "description": "T-shirt en coton premium, coupe moderne et confortable pour tous les jours.",
+    "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600",
+    "images": [
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800",
+      "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=800",
+      "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800"
+    ],
     "tailles": ["XS", "S", "M", "L", "XL"],
     "couleurs": ["Noir", "Blanc", "Beige"],
     "categorie": "Hauts"
@@ -15,8 +20,13 @@
     "nom": "Robe Soleil",
     "prix": 25000,
     "devise": "FCFA",
-    "description": "Robe fluide et élégante, parfaite pour toutes occasions.",
-    "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
+    "description": "Robe fluide et élégante, parfaite pour toutes occasions, du jour au soir.",
+    "image": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600",
+    "images": [
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800",
+      "https://images.unsplash.com/photo-1572804013427-4d7ca7268217?w=800",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800"
+    ],
     "tailles": ["S", "M", "L"],
     "couleurs": ["Jaune", "Corail", "Blanc"],
     "categorie": "Robes"
@@ -26,8 +36,12 @@
     "nom": "Pantalon Élite",
     "prix": 18000,
     "devise": "FCFA",
-    "description": "Pantalon taille haute, coupe droite et raffinée.",
-    "image": "https://images.unsplash.com/photo-1718252540511-e958742e4165?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "description": "Pantalon taille haute, coupe droite et raffinée, idéal bureau et casual.",
+    "image": "https://images.unsplash.com/photo-1594938298603-c8148c4b4505?w=600",
+    "images": [
+      "https://images.unsplash.com/photo-1594938298603-c8148c4b4505?w=800",
+      "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800"
+    ],
     "tailles": ["S", "M", "L", "XL"],
     "couleurs": ["Noir", "Kaki", "Bleu Marine"],
     "categorie": "Bas"
@@ -37,8 +51,13 @@
     "nom": "Veste Prestige",
     "prix": 35000,
     "devise": "FCFA",
-    "description": "Veste structurée, finitions impeccables, style business-casual.",
-    "image": "https://images.unsplash.com/photo-1727515546577-f7d82a47b51d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHZlc3RlfGVufDB8fDB8fHww",
+    "description": "Veste structurée, finitions impeccables, style business-casual affirmé.",
+    "image": "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600",
+    "images": [
+      "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800",
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800",
+      "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=800"
+    ],
     "tailles": ["S", "M", "L", "XL"],
     "couleurs": ["Camel", "Noir", "Gris"],
     "categorie": "Vestes"
@@ -48,8 +67,12 @@
     "nom": "Jupe Liberté",
     "prix": 14000,
     "devise": "FCFA",
-    "description": "Jupe mi-longue avec fentes latérales, mouvement naturel.",
-    "image": "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600&q=80",
+    "description": "Jupe mi-longue avec fentes latérales, mouvement naturel et élégant.",
+    "image": "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600",
+    "images": [
+      "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=800",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800"
+    ],
     "tailles": ["XS", "S", "M", "L"],
     "couleurs": ["Bordeaux", "Noir", "Vert Forêt"],
     "categorie": "Bas"
@@ -59,8 +82,13 @@
     "nom": "Blazer Signature",
     "prix": 42000,
     "devise": "FCFA",
-    "description": "Blazer iconique, double boutonnage, silhouette affirmée.",
-    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    "description": "Blazer iconique, double boutonnage, silhouette affirmée pour toutes occasions.",
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600",
+    "images": [
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800",
+      "https://images.unsplash.com/photo-1512353087810-25dfcd100962?w=800",
+      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800"
+    ],
     "tailles": ["S", "M", "L"],
     "couleurs": ["Ivoire", "Noir", "Bleu Nuit"],
     "categorie": "Vestes"
