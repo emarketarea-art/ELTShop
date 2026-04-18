@@ -118,18 +118,17 @@
     .overlay.ouverte{display:flex;align-items:center;justify-content:center;padding:20px}
     /* ── MODAL DESKTOP ── */
     .modal{
-      width:min(880px,92vw);
-      /* height fixe = la modal occupe exactement 88vh, ni plus ni moins */
-      height:88vh;
-      max-height:88vh;
-      background:#fff;
-      border-radius:20px;
-      overflow:hidden;
-      /* grid-template-rows:1fr force la ligne unique à remplir toute la hauteur */
-      display:grid;
-      grid-template-columns:42% 58%;
-      grid-template-rows:1fr;
-      animation:modalEntree .4s var(--ease);
+      width: min(880px, 92vw);
+      max-height: 88vh;
+      background: #fff;
+      border-radius: 20px;
+      /* overflow:hidden ici clip les coins arrondis sur TOUS les enfants */
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 42% 58%;
+      /* La seule ligne du grid = 88vh max, pas plus */
+      grid-template-rows: minmax(0, 88vh);
+      animation: modalEntree .4s var(--ease);
     }
     @keyframes modalEntree{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 
@@ -138,7 +137,6 @@
       .overlay.ouverte{align-items:flex-end;padding:0}
       .modal{
         width:100%;
-        height:auto;
         max-height:93dvh;
         border-radius:24px 24px 0 0;
         grid-template-columns:1fr;
@@ -150,14 +148,13 @@
       @keyframes bottomSheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
     }
 
-    /* Colonne droite desktop = flex column avec scroll interne */
+    /* Colonne droite desktop : flex column, contenu scrollable si besoin */
     @media(min-width:768px){
       .modal-colonne-droite{
         display:flex;
         flex-direction:column;
-        height:100%;          /* remplit exactement la hauteur de la cellule grid */
+        min-height:0;   /* indispensable pour que flex enfant puisse rétrécir */
         overflow:hidden;
-        min-height:0;
       }
       .modal-contenu{flex:1;overflow-y:auto;min-height:0}
       .modal-bas{flex-shrink:0}
@@ -166,27 +163,47 @@
     .modal-handle{display:none;width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 0;flex-shrink:0}
     @media(max-width:767px){.modal-handle{display:block}}
 
-    /* Zone image gauche : remplit TOUTE la cellule grid, jamais plus */
+    /* ── ZONE IMAGE
+       Technique : positionnement absolu de l'image dans un conteneur
+       relatif qui remplit sa cellule grid. L'image ne peut JAMAIS
+       déborder puisque le conteneur a overflow:hidden et que l'image
+       est clipsée par inset:0.
+    ── */
     .modal-image-zone{
-      position:relative;
-      overflow:hidden;
-      background:var(--pierre);
+      position: relative;
+      overflow: hidden;          /* clip strict */
+      background: var(--pierre);
+      min-height: 0;             /* empêche la cellule grid de gonfler */
     }
+
     @media(min-width:768px){
-      .modal-image-zone{
-        height:100%;   /* = hauteur de la cellule grid = hauteur de la modal */
-        min-height:0;  /* annule tout min-height implicite */
+      /* Sur desktop : l'image remplit toute la cellule gauche via position absolute */
+      .modal-image-zone img{
+        position: absolute;
+        inset: 0;                /* top:0; right:0; bottom:0; left:0 */
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        cursor: zoom-in;
+        z-index: 1;              /* sous les boutons (z-index 4-5) */
       }
     }
+
     @media(max-width:767px){
-      .modal-image-zone{height:clamp(260px,60vw,360px);flex-shrink:0}
-    }
-    .modal-image-zone img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      object-position:center center;
-      cursor:zoom-in;
+      /* Sur mobile : hauteur fixe, image normale en flux */
+      .modal-image-zone{
+        height: clamp(260px, 60vw, 360px);
+        flex-shrink: 0;
+      }
+      .modal-image-zone img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        cursor: zoom-in;
+        display: block;
+      }
     }
 
     .btn-fermer{position:absolute;top:14px;right:14px;width:36px;height:36px;background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .2s}
