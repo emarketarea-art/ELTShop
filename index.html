@@ -715,7 +715,7 @@
        ⚙️ CONFIGURATION
     ======================================================= */
     const CONFIG = {
-      WHATSAPP_NUMERO: "22891234567",
+      WHATSAPP_NUMERO: "22891183716",
       ITEMS_PAR_PAGE:  12,
       CLE_PRODUITS:    "elite_produits",
       CLE_PANIER:      "elite_panier",
@@ -1418,7 +1418,7 @@
 
       const imageUrl = produitActuel.image.split('?')[0];
       const msg =
-`Bonjour Maison Élite ! 👋
+`Bonjour Maison ÉLTShop ! 👋
 
 Je souhaite commander ce produit :
 
@@ -1454,7 +1454,7 @@ Merci de confirmer la disponibilité et les modalités de livraison. 🙏`;
       const devise = panier[0]?.devise || 'FCFA';
 
       const msg =
-`Bonjour Maison Élite ! 👋
+`Bonjour ELTShop ! 👋
 
 Je souhaite commander ${panier.length} article${panier.length>1?'s':''} :
 
@@ -1503,7 +1503,7 @@ Merci de confirmer la disponibilité et les modalités de livraison. 🙏`;
        BOUTON FLOTTANT
     ======================================================= */
     function configFlottant() {
-      const msg = `Bonjour Maison Élite ! 👋\nJe souhaite en savoir plus sur votre collection.`;
+      const msg = `Bonjour ELTShop ! 👋\nJe souhaite en savoir plus sur votre collection.`;
       const lien = `https://wa.me/${CONFIG.WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`;
       document.getElementById('wa-flottant').href = lien;
       document.getElementById('hero-wa-btn').href = lien;
