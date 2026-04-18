@@ -163,86 +163,208 @@
     .modal-handle{display:none;width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 0;flex-shrink:0}
     @media(max-width:767px){.modal-handle{display:block}}
 
-    /* ── ZONE IMAGE
-       Technique : positionnement absolu de l'image dans un conteneur
-       relatif qui remplit sa cellule grid. L'image ne peut JAMAIS
-       déborder puisque le conteneur a overflow:hidden et que l'image
-       est clipsée par inset:0.
-    ── */
+    /* ══════════════════════════════════════════════
+       GALERIE STYLE ALIBABA
+       Desktop : miniatures verticales gauche + grande image droite
+       Mobile  : carousel plein largeur avec flèches + points
+    ══════════════════════════════════════════════ */
+
+    /* Conteneur principal de la zone image (cellule gauche du grid modal) */
     .modal-image-zone{
-      position: relative;
-      overflow: hidden;          /* clip strict */
-      background: var(--pierre);
-      min-height: 0;             /* empêche la cellule grid de gonfler */
+      position:relative;
+      overflow:hidden;
+      background:var(--pierre);
+      min-height:0;
     }
 
+    /* ── DESKTOP ── */
     @media(min-width:768px){
-      /* Sur desktop : l'image remplit toute la cellule gauche via position absolute */
-      .modal-image-zone img{
-        position: absolute;
-        inset: 0;                /* top:0; right:0; bottom:0; left:0 */
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center center;
-        cursor: zoom-in;
-        z-index: 1;              /* sous les boutons (z-index 4-5) */
-      }
-    }
-
-    @media(max-width:767px){
-      /* Sur mobile : hauteur fixe, image normale en flux */
+      /* La zone image se divise en 2 : strip (72px) + grande image (reste) */
       .modal-image-zone{
-        height: clamp(260px, 60vw, 360px);
-        flex-shrink: 0;
+        display:grid;
+        grid-template-columns:72px 1fr;
+        height:100%;
       }
-      .modal-image-zone img{
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center center;
-        cursor: zoom-in;
-        display: block;
+
+      /* Colonne des miniatures — scrollable verticalement */
+      .galerie-thumbs{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+        padding:10px 8px;
+        overflow-y:auto;
+        overflow-x:hidden;
+        scrollbar-width:thin;
+        scrollbar-color:var(--pierre) transparent;
+        background:#fafaf8;
+        border-right:1px solid var(--pierre);
       }
+      .galerie-thumbs::-webkit-scrollbar{width:4px}
+      .galerie-thumbs::-webkit-scrollbar-thumb{background:var(--pierre);border-radius:4px}
+
+      .galerie-thumb{
+        width:56px;
+        height:56px;
+        object-fit:cover;
+        border-radius:6px;
+        cursor:pointer;
+        border:2px solid transparent;
+        flex-shrink:0;
+        opacity:.65;
+        transition:opacity .2s, border-color .2s;
+        display:block;
+      }
+      .galerie-thumb:hover{opacity:1;}
+      .galerie-thumb.active{
+        border-color:var(--or);
+        opacity:1;
+      }
+
+      /* Si produit avec 1 seule image → cacher la colonne des thumbs */
+      .galerie-thumbs:empty,
+      .galerie-thumbs.cachee{display:none}
+      .galerie-thumbs:empty ~ .galerie-main,
+      .galerie-thumbs.cachee ~ .galerie-main{grid-column:1 / -1}
+
+      /* Grande image principale */
+      .galerie-main{
+        position:relative;
+        overflow:hidden;
+        background:var(--pierre);
+      }
+
+      .galerie-main img#modal-img{
+        position:absolute;
+        inset:0;
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        cursor:zoom-in;
+        transition:transform .4s ease, opacity .12s ease;
+        z-index:1;
+      }
+      .galerie-main:hover img#modal-img{
+        transform:scale(1.04); /* léger zoom au survol comme Alibaba */
+      }
+
+      /* Boutons sur la grande image */
+      .btn-fermer{position:absolute;top:12px;right:12px;z-index:10}
+      .btn-partager{position:absolute;bottom:12px;left:12px;z-index:5}
+      .btn-plein-ecran{position:absolute;bottom:12px;right:12px;z-index:5}
+
+      /* Cacher les flèches carousel sur desktop */
+      .carousel-prev,.carousel-next,.carousel-dots{display:none}
     }
 
-    .btn-fermer{position:absolute;top:14px;right:14px;width:36px;height:36px;background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .2s}
+    /* ── MOBILE : carousel plein largeur ── */
+    @media(max-width:767px){
+      .modal-image-zone{
+        height:clamp(280px,65vw,380px);
+        flex-shrink:0;
+      }
+
+      /* Cacher la strip verticale, afficher le carousel */
+      .galerie-thumbs{display:none}
+
+      .galerie-main{
+        position:relative;
+        width:100%;
+        height:100%;
+        overflow:hidden;
+        touch-action:pan-y;
+      }
+
+      /* Piste qui contient toutes les images côte à côte */
+      .carousel-track{
+        display:flex;
+        width:100%;
+        height:100%;
+        transition:transform .35s cubic-bezier(0.16,1,0.3,1);
+        will-change:transform;
+      }
+
+      .carousel-slide{
+        flex-shrink:0;
+        width:100%;
+        height:100%;
+      }
+
+      .carousel-slide img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        object-position:center 20%;
+        display:block;
+        pointer-events:none; /* évite drag image natif */
+      }
+
+      /* Flèches gauche / droite */
+      .carousel-prev,.carousel-next{
+        position:absolute;
+        top:50%;
+        transform:translateY(-50%);
+        width:34px;
+        height:34px;
+        background:rgba(255,255,255,.85);
+        border:none;
+        border-radius:50%;
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:5;
+        transition:background .2s;
+        box-shadow:0 2px 8px rgba(0,0,0,.15);
+      }
+      .carousel-prev:hover,.carousel-next:hover{background:#fff}
+      .carousel-prev{left:10px}
+      .carousel-next{right:10px}
+      .carousel-prev svg,.carousel-next svg{
+        width:16px;height:16px;stroke:var(--texte);
+        fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;
+      }
+
+      /* Points de pagination */
+      .carousel-dots{
+        position:absolute;
+        bottom:10px;
+        left:50%;
+        transform:translateX(-50%);
+        display:flex;
+        gap:5px;
+        z-index:5;
+      }
+      .carousel-dot{
+        width:6px;height:6px;
+        border-radius:50%;
+        background:rgba(255,255,255,.5);
+        border:none;
+        cursor:pointer;
+        padding:0;
+        transition:all .2s;
+        flex-shrink:0;
+      }
+      .carousel-dot.active{
+        background:#fff;
+        width:18px;
+        border-radius:3px;
+      }
+
+      /* Bouton fermer mobile */
+      .btn-fermer{position:absolute;top:12px;right:12px;z-index:10}
+      .btn-partager{display:none} /* caché sur mobile, gardé dans la colonne droite */
+      .btn-plein-ecran{display:none}
+    }
+
+    /* Styles communs boutons superposés */
+    .btn-fermer{width:36px;height:36px;background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
     .btn-fermer:hover{background:rgba(255,255,255,.2)}
-    .btn-plein-ecran{position:absolute;bottom:12px;right:12px;background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:.72rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;letter-spacing:.5px;padding:7px 13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;z-index:5}
+    .btn-plein-ecran{background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:.72rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;letter-spacing:.5px;padding:7px 13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s}
     .btn-plein-ecran:hover{background:rgba(255,255,255,.15)}
     .btn-plein-ecran svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-
-    /* Bouton partager */
-    .btn-partager{position:absolute;bottom:12px;left:12px;background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:.72rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;letter-spacing:.5px;padding:7px 13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;z-index:5}
+    .btn-partager{background:rgba(20,15,10,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:.72rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;letter-spacing:.5px;padding:7px 13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s}
     .btn-partager:hover{background:rgba(255,255,255,.15)}
     .btn-partager svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-
-    /* ── GALERIE MINIATURES ── */
-    .galerie-strip{
-      position:absolute;
-      bottom:0; left:0; right:0;
-      display:flex;
-      gap:6px;
-      padding:10px 12px;
-      background:linear-gradient(to top, rgba(20,15,10,.7) 0%, transparent 100%);
-      overflow-x:auto;
-      scrollbar-width:none;
-      z-index:4;
-    }
-    .galerie-strip::-webkit-scrollbar{display:none}
-    .galerie-strip.une-seule-image{display:none} /* masquer si 1 seule image */
-    .galerie-thumb{
-      width:52px; height:52px;
-      object-fit:cover;
-      border-radius:6px;
-      cursor:pointer;
-      border:2px solid transparent;
-      flex-shrink:0;
-      opacity:.7;
-      transition:opacity .2s, border-color .2s, transform .2s;
-    }
-    .galerie-thumb:hover{opacity:1; transform:translateY(-2px)}
-    .galerie-thumb.active{border-color:#fff; opacity:1;}
 
     .modal-contenu{padding:28px 28px 0;overflow-y:auto;display:flex;flex-direction:column;gap:18px;-webkit-overflow-scrolling:touch}
     @media(max-width:767px){.modal-contenu{padding:20px 20px 0;flex:1}}
@@ -433,20 +555,44 @@
       <div class="modal-handle"></div>
 
       <div class="modal-image-zone">
-        <button class="btn-fermer" onclick="fermerModal()" aria-label="Fermer">✕</button>
-        <img id="modal-img" src="" alt="" onclick="ouvrirVisionneuse()" />
 
-        <!-- Bande de miniatures galerie -->
-        <div class="galerie-strip" id="galerie-strip"></div>
+        <!-- ── Strip miniatures verticales (desktop Alibaba) ── -->
+        <div class="galerie-thumbs" id="galerie-thumbs"></div>
 
-        <button class="btn-partager" onclick="partagerProduit()">
-          <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          Partager
-        </button>
-        <button class="btn-plein-ecran" onclick="ouvrirVisionneuse()">
-          <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
-          Voir en grand
-        </button>
+        <!-- ── Zone grande image ── -->
+        <div class="galerie-main" id="galerie-main">
+
+          <!-- Bouton fermer -->
+          <button class="btn-fermer" onclick="fermerModal()" aria-label="Fermer">✕</button>
+
+          <!-- Image principale (desktop) / premier slide (mobile) -->
+          <img id="modal-img" src="" alt="" onclick="ouvrirVisionneuse()" />
+
+          <!-- Piste carousel (mobile uniquement — remplie par JS) -->
+          <div class="carousel-track" id="carousel-track"></div>
+
+          <!-- Flèches carousel (mobile) -->
+          <button class="carousel-prev" id="carousel-prev" onclick="carouselNav(-1)" aria-label="Précédent">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="carousel-next" id="carousel-next" onclick="carouselNav(1)" aria-label="Suivant">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+
+          <!-- Points pagination (mobile) -->
+          <div class="carousel-dots" id="carousel-dots"></div>
+
+          <!-- Boutons action -->
+          <button class="btn-partager" onclick="partagerProduit()">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Partager
+          </button>
+          <button class="btn-plein-ecran" onclick="ouvrirVisionneuse()">
+            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            Voir en grand
+          </button>
+        </div>
+
       </div>
 
       <div class="modal-colonne-droite">
@@ -864,56 +1010,42 @@
     }
 
     /* =======================================================
+       GALERIE — État partagé
+    ======================================================= */
+    let indexImageActif = 0;  // index de l'image affichée (desktop ET mobile)
+    let carouselImages  = []; // liste complète des URLs pour le produit ouvert
+    let touchStartX     = 0;  // pour le swipe horizontal mobile
+
+    /* =======================================================
        MODAL — OUVRIR
     ======================================================= */
-    /* Index de l'image active dans la galerie */
-    let indexImageActif = 0;
-
     function ouvrirModal(id) {
-      const p = tousProduits.find(x => x.id===id);
+      const p = tousProduits.find(x => x.id === id);
       if (!p) return;
-      produitActuel = p;
-      indexImageActif = 0;
+      produitActuel    = p;
+      indexImageActif  = 0;
+      carouselImages   = (p.images && p.images.length > 0) ? p.images : [p.image];
 
       enregistrerVue(id);
       history.replaceState(null, '', `#produit-${id}`);
 
+      // Infos texte
       document.getElementById('modal-badge').textContent = p.categorie;
       document.getElementById('modal-nom').textContent   = p.nom;
       document.getElementById('modal-prix').textContent  = `${p.prix.toLocaleString('fr-FR')} ${p.devise}`;
       document.getElementById('modal-desc').textContent  = p.description;
 
-      // Construire la liste complète des images (images[] ou fallback sur image)
-      const listeImages = (p.images && p.images.length > 0) ? p.images : [p.image];
+      // Construire la galerie
+      construireGalerie(p);
 
-      // Afficher la première image
-      afficherImageGalerie(listeImages, 0, p.categorie);
-
-      // Construire les miniatures
-      const strip = document.getElementById('galerie-strip');
-      if (listeImages.length <= 1) {
-        strip.className = 'galerie-strip une-seule-image';
-        strip.innerHTML = '';
-      } else {
-        strip.className = 'galerie-strip';
-        strip.innerHTML = listeImages.map((url, i) => `
-          <img
-            class="galerie-thumb${i===0?' active':''}"
-            src="${optimiserUrl(url, 150)}"
-            alt="${p.nom} photo ${i+1}"
-            onclick="changerImage(${i})"
-            onerror="this.style.display='none'"
-          />`
-        ).join('');
-      }
-
+      // Sélecteurs taille / couleur
       document.getElementById('modal-tailles').innerHTML = p.tailles.map(t =>
         `<button class="btn-option" onclick="selectionner(this)">${t}</button>`
       ).join('');
 
-      document.getElementById('modal-couleurs').innerHTML = p.couleurs.map(c =>
+      document.getElementById('modal-couleurs').innerHTML = p.couleurs.map(col =>
         `<button class="btn-couleur-opt" onclick="selectionner(this)">
-          <span style="width:12px;height:12px;border-radius:50%;background:${couleurCSS(c)};border:1px solid rgba(0,0,0,.1);display:inline-block;flex-shrink:0"></span>${c}
+          <span style="width:12px;height:12px;border-radius:50%;background:${couleurCSS(col)};border:1px solid rgba(0,0,0,.1);display:inline-block;flex-shrink:0"></span>${col}
         </button>`
       ).join('');
 
@@ -922,34 +1054,160 @@
       document.getElementById('overlay').classList.add('ouverte');
       document.body.classList.add('modal-ouverte');
 
+      // Swipe vertical (mobile) pour fermer la modal
       const modal = document.getElementById('modal');
-      modal.ontouchstart = e => { touchStartY = e.touches[0].clientY; };
-      modal.ontouchend   = e => { if (e.changedTouches[0].clientY - touchStartY > 80) fermerModal(); };
+      modal.ontouchstart = e => {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+      };
+      modal.ontouchend = e => {
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        const dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+        // Fermer seulement si glissement vertical dominant > 80px
+        if (dy > 80 && dx < 40) fermerModal();
+      };
     }
 
-    /* Afficher une image par son index dans la liste */
-    function afficherImageGalerie(liste, index, categorie) {
-      const img = document.getElementById('modal-img');
-      img.src   = optimiserUrl(liste[index], 800);
-      img.alt   = produitActuel?.nom || '';
-      const cadrage = {'Hauts':'center 20%','Robes':'center top','Vestes':'center 15%','Bas':'center 40%'};
-      img.style.objectPosition = cadrage[categorie] || 'center 25%';
-      indexImageActif = index;
+    /* =======================================================
+       CONSTRUIRE LA GALERIE (desktop + mobile)
+    ======================================================= */
+    function construireGalerie(p) {
+      const isMobile  = window.innerWidth < 768;
+      const cadrage   = {'Hauts':'center 20%','Robes':'center top','Vestes':'center 15%','Bas':'center 40%'};
+      const pos       = cadrage[p.categorie] || 'center 25%';
+
+      /* ── DESKTOP : image principale + strip miniatures verticales ── */
+      if (!isMobile) {
+        // Grande image
+        const imgEl = document.getElementById('modal-img');
+        imgEl.src   = optimiserUrl(carouselImages[0], 900);
+        imgEl.alt   = p.nom;
+        imgEl.style.objectPosition = pos;
+        imgEl.style.display = 'block';
+
+        // Cacher la piste carousel
+        document.getElementById('carousel-track').innerHTML = '';
+        document.getElementById('carousel-dots').innerHTML  = '';
+
+        // Strip miniatures (cachée si 1 seule image)
+        const thumbsEl = document.getElementById('galerie-thumbs');
+        if (carouselImages.length <= 1) {
+          thumbsEl.className = 'galerie-thumbs cachee';
+          thumbsEl.innerHTML = '';
+        } else {
+          thumbsEl.className = 'galerie-thumbs';
+          thumbsEl.innerHTML = carouselImages.map((url, i) => `
+            <img
+              class="galerie-thumb${i === 0 ? ' active' : ''}"
+              src="${optimiserUrl(url, 120)}"
+              alt="${p.nom} vue ${i + 1}"
+              onclick="changerImage(${i})"
+              onerror="this.style.opacity='0.3'"
+            />`
+          ).join('');
+        }
+        return;
+      }
+
+      /* ── MOBILE : carousel plein largeur ── */
+      // Cacher l'image fixe (on utilise la piste)
+      const imgEl = document.getElementById('modal-img');
+      imgEl.style.display = 'none';
+
+      // Cacher thumbs
+      document.getElementById('galerie-thumbs').innerHTML = '';
+
+      // Construire la piste
+      const track = document.getElementById('carousel-track');
+      track.innerHTML = carouselImages.map(url => `
+        <div class="carousel-slide">
+          <img src="${optimiserUrl(url, 700)}" alt="${p.nom}" style="object-position:${pos}" />
+        </div>`
+      ).join('');
+      track.style.transform = 'translateX(0)';
+
+      // Points de pagination
+      const dots = document.getElementById('carousel-dots');
+      if (carouselImages.length <= 1) {
+        dots.innerHTML = '';
+      } else {
+        dots.innerHTML = carouselImages.map((_, i) =>
+          `<button class="carousel-dot${i === 0 ? ' active' : ''}" onclick="allerAuSlide(${i})"></button>`
+        ).join('');
+      }
+
+      // Flèches (cacher si 1 seule image)
+      const afficherFleches = carouselImages.length > 1;
+      document.getElementById('carousel-prev').style.display = afficherFleches ? 'flex' : 'none';
+      document.getElementById('carousel-next').style.display = afficherFleches ? 'flex' : 'none';
+
+      // Swipe horizontal pour naviguer dans le carousel
+      activerSwipeCarousel();
     }
 
-    /* Changer l'image active (appelé par clic sur miniature) */
+    /* =======================================================
+       GALERIE DESKTOP — Changer l'image active via miniature
+    ======================================================= */
     function changerImage(index) {
-      if (!produitActuel) return;
-      const liste = (produitActuel.images && produitActuel.images.length > 0)
-        ? produitActuel.images : [produitActuel.image];
+      if (!produitActuel || index === indexImageActif) return;
+      indexImageActif = index;
 
-      afficherImageGalerie(liste, index, produitActuel.categorie);
+      const img = document.getElementById('modal-img');
+      // Petit fondu pour la transition
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = optimiserUrl(carouselImages[index], 900);
+        const cadrage = {'Hauts':'center 20%','Robes':'center top','Vestes':'center 15%','Bas':'center 40%'};
+        img.style.objectPosition = cadrage[produitActuel.categorie] || 'center 25%';
+        img.style.opacity = '1';
+      }, 120);
 
-      // Mettre à jour la miniature active
+      // Mise à jour visuelle des miniatures
       document.querySelectorAll('.galerie-thumb').forEach((t, i) => {
         t.classList.toggle('active', i === index);
       });
+
+      // Scroll automatique de la thumb active si elle est hors vue
+      const thumb = document.querySelectorAll('.galerie-thumb')[index];
+      if (thumb) thumb.scrollIntoView({ block:'nearest', behavior:'smooth' });
     }
+
+    /* =======================================================
+       CAROUSEL MOBILE — Navigation
+    ======================================================= */
+    function allerAuSlide(index) {
+      if (!carouselImages.length) return;
+      indexImageActif = Math.max(0, Math.min(index, carouselImages.length - 1));
+
+      document.getElementById('carousel-track').style.transform =
+        `translateX(-${indexImageActif * 100}%)`;
+
+      // Mettre à jour les points
+      document.querySelectorAll('.carousel-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === indexImageActif);
+      });
+    }
+
+    function carouselNav(direction) {
+      allerAuSlide(indexImageActif + direction);
+    }
+
+    /* Swipe tactile horizontal dans le carousel */
+    function activerSwipeCarousel() {
+      const track = document.getElementById('carousel-track');
+      let xStart = 0;
+
+      track.ontouchstart = e => { xStart = e.touches[0].clientX; };
+      track.ontouchend   = e => {
+        const dx = e.changedTouches[0].clientX - xStart;
+        if (Math.abs(dx) > 40) carouselNav(dx < 0 ? 1 : -1);
+      };
+    }
+
+    /* Reconstruire la galerie si on redimensionne (passage desktop ↔ mobile) */
+    window.addEventListener('resize', () => {
+      if (produitActuel) construireGalerie(produitActuel);
+    });
 
     function selectionner(btn) {
       btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('selectionne'));
@@ -962,21 +1220,20 @@
     function fermerModal() {
       document.getElementById('overlay').classList.remove('ouverte');
       document.body.classList.remove('modal-ouverte');
-      produitActuel = null;
+      produitActuel   = null;
       indexImageActif = 0;
+      carouselImages  = [];
       history.replaceState(null, '', window.location.pathname);
     }
-    function fermerModalSiOverlay(e) { if (e.target===document.getElementById('overlay')) fermerModal(); }
+    function fermerModalSiOverlay(e) { if (e.target === document.getElementById('overlay')) fermerModal(); }
 
     /* =======================================================
-       VISIONNEUSE PLEIN ÉCRAN — ouvre l'image active de la galerie
+       VISIONNEUSE PLEIN ÉCRAN — ouvre l'image active
     ======================================================= */
     function ouvrirVisionneuse() {
       if (!produitActuel) return;
-      const liste = (produitActuel.images && produitActuel.images.length > 0)
-        ? produitActuel.images : [produitActuel.image];
-      // Afficher l'image actuellement sélectionnée en plein écran
-      document.getElementById('visionneuse-img').src = optimiserUrl(liste[indexImageActif], 1400);
+      const url = carouselImages[indexImageActif] || produitActuel.image;
+      document.getElementById('visionneuse-img').src = optimiserUrl(url, 1400);
       document.getElementById('visionneuse-img').alt = produitActuel.nom;
       document.getElementById('visionneuse').classList.add('ouverte');
       document.body.style.overflow = 'hidden';
