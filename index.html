@@ -446,7 +446,7 @@
     function ajouterAuPanier() {
       const choix = validerChoix(); if(!choix) return;
       panier.push({ uid: Date.now(), id: produitActuel.id, nom: produitActuel.nom, prix: produitActuel.prix, devise: produitActuel.devise, taille: choix.taille, couleur: choix.couleur, image: produitActuel.images?.[0] || produitActuel.image });
-      localStorage.setItem(CONFIG.CLE_PANIER, JSON.stringify(panier)); mettreAJourBadge(); afficherToast(`✅ Ajouté au panier`); fermerModal();
+      localStorage.setItem(CONFIG.CLE_PANIER, JSON.stringify(panier)); mettreAJourBadge(); afficherToast(`✓ Ajouté au panier`); fermerModal();
     }
     function retirerDuPanier(uid) { panier = panier.filter(i => i.uid !== uid); localStorage.setItem(CONFIG.CLE_PANIER, JSON.stringify(panier)); rendrePanier(); }
     
