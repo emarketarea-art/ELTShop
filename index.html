@@ -292,15 +292,39 @@
     let panier = JSON.parse(localStorage.getItem(CONFIG.CLE_PANIER)) || [];
 
     /* =======================================================
-       CHARGEMENT DES PRODUITS
+       FONCTION DE MÉLANGE (Fisher-Yates)
+    ======================================================= */
+    function melangerTableau(tableau) {
+      for (let i = tableau.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tableau[i], tableau[j]] = [tableau[j], tableau[i]];
+      }
+      return tableau;
+    }
+
+    /* =======================================================
+       CHARGEMENT DES PRODUITS (Mélange intelligent)
     ======================================================= */
     async function chargerProduits() {
       try {
-        const { data, error } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('products').select('*');
         if (error) throw error;
-        tousProduits = data || []; produitsFiltres = tousProduits;
-        construireFiltres(); afficherGrille();
-        verifierUrlPartage(); // Vérifier si on vient d'un lien partagé
+        
+        // On sépare les articles en stock et ceux en rupture
+        let enStock = data.filter(p => p.stock > 0);
+        let epuises = data.filter(p => p.stock === 0);
+
+        // On mélange aléatoirement chaque groupe
+        enStock = melangerTableau(enStock);
+        epuises = melangerTableau(epuises);
+
+        // On rassemble (Les articles en stock en haut, les épuisés en bas)
+        tousProduits = [...enStock, ...epuises];
+        produitsFiltres = tousProduits;
+        
+        construireFiltres(); 
+        afficherGrille();
+        verifierUrlPartage(); 
       } catch (err) {
         document.getElementById('grille-produits').innerHTML = '<p>Erreur serveur.</p>';
       }
