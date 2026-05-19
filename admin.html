@@ -3,30 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CMS Admin — Maison Élite</title>
+  <title>CMS Admin — ELTShop</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- Script officiel Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    /* (Mêmes styles que précédemment, aucun changement visuel majeur à part le formulaire) */
     :root {
-      --fond:    #F7F3EE;
-      --blanc:   #FFFFFF;
-      --texte:   #1A1410;
-      --texte-2: #7A6A5A;
-      --or:      #B5893F;
-      --pierre:  #E8DDD2;
-      --nav:     #140F0A;
-      --vert:    #27AE60;
-      --rouge:   #C0392B;
-      --bleu:    #2980B9;
-      --rayon:   10px;
-      --ombre:   0 2px 16px rgba(26,20,10,.08);
+      --fond:    #F7F3EE; --blanc:   #FFFFFF; --texte:   #1A1410;
+      --texte-2: #7A6A5A; --or:      #B5893F; --pierre:  #E8DDD2;
+      --nav:     #140F0A; --vert:    #27AE60; --rouge:   #C0392B;
+      --bleu:    #2980B9; --rayon:   10px; --ombre:   0 2px 16px rgba(26,20,10,.08);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{-webkit-font-smoothing:antialiased}
     body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--fond);color:var(--texte);min-height:100vh}
 
-    /* ── LOGIN ── */
     .login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:var(--nav)}
     .login-box{background:var(--blanc);border-radius:20px;padding:48px 40px;width:min(400px,100%);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
     .login-logo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--or);letter-spacing:4px;text-transform:uppercase;margin-bottom:8px}
@@ -38,7 +32,6 @@
     .login-erreur{color:var(--rouge);font-size:.82rem;margin-top:12px;display:none}
     .login-erreur.visible{display:block}
 
-    /* ── LAYOUT ADMIN ── */
     .admin-page{display:none}
     .admin-page.visible{display:block}
 
@@ -50,29 +43,20 @@
     .topbar-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
     .admin-main{max-width:1100px;margin:0 auto;padding:36px clamp(16px,4%,40px)}
-
-    /* ── STATS ── */
     .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:32px}
     .stat-card{background:var(--blanc);border-radius:var(--rayon);padding:20px 22px;box-shadow:var(--ombre)}
     .stat-label{font-size:.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--texte-2);margin-bottom:8px}
     .stat-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--texte)}
     .stat-val span{font-size:1rem;color:var(--or)}
 
-    /* ── BARRE ACTIONS ── */
     .actions-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
     .btn-ajouter{background:var(--or);color:var(--nav);padding:10px 22px;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.5px;cursor:pointer;transition:background .25s;display:flex;align-items:center;gap:7px}
     .btn-ajouter:hover{background:#C9A54F}
     .btn-ajouter svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
-    .btn-import,.btn-export{background:transparent;border:1.5px solid var(--pierre);color:var(--texte);padding:9px 18px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
-    .btn-import:hover{border-color:var(--bleu);color:var(--bleu)}
-    .btn-export:hover{border-color:var(--vert);color:var(--vert)}
-    .btn-import svg,.btn-export svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-
+    
     .recherche-admin{margin-left:auto;padding:9px 14px;border:1.5px solid var(--pierre);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;outline:none;min-width:200px;transition:border-color .2s}
     .recherche-admin:focus{border-color:var(--or)}
 
-    /* ── TABLEAU ── */
-    /* ── TABLEAU DESKTOP ── */
     .table-wrap{background:var(--blanc);border-radius:14px;box-shadow:var(--ombre);overflow:hidden}
     table{width:100%;border-collapse:collapse}
     thead{background:#FAF7F3}
@@ -93,149 +77,43 @@
     .btn-del:hover{background:rgba(192,57,43,.08)}
     .btn-edit svg,.btn-del svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
-    /* ── MOBILE : masquer tableau, afficher cartes ── */
     @media(max-width:768px){
-      /* Masquer le tableau sur mobile */
       .table-wrap table, .table-wrap thead { display:none }
-
-      /* Grille de cartes produit */
-      .grille-cartes-admin{
-        display:flex;
-        flex-direction:column;
-        gap:12px;
-        padding:12px;
-      }
-
-      /* Carte individuelle */
-      .carte-admin{
-        display:grid;
-        grid-template-columns:72px 1fr;
-        gap:12px;
-        background:white;
-        border-radius:12px;
-        padding:14px;
-        border:1px solid var(--pierre);
-        align-items:center;
-      }
-
-      .carte-admin-img{
-        width:72px;
-        height:72px;
-        object-fit:cover;
-        border-radius:10px;
-        background:var(--pierre);
-      }
-
+      .grille-cartes-admin{display:flex;flex-direction:column;gap:12px;padding:12px;}
+      .carte-admin{display:grid;grid-template-columns:72px 1fr;gap:12px;background:white;border-radius:12px;padding:14px;border:1px solid var(--pierre);align-items:center;}
+      .carte-admin-img{width:72px;height:72px;object-fit:cover;border-radius:10px;background:var(--pierre);}
       .carte-admin-infos{ min-width:0 }
-
-      .carte-admin-nom{
-        font-weight:600;
-        font-size:.92rem;
-        white-space:nowrap;
-        overflow:hidden;
-        text-overflow:ellipsis;
-        margin-bottom:3px;
-      }
-
-      .carte-admin-meta{
-        display:flex;
-        align-items:center;
-        gap:8px;
-        margin-bottom:10px;
-        flex-wrap:wrap;
-      }
-
-      .carte-admin-actions{
-        display:flex;
-        gap:8px;
-      }
-
-      .btn-edit-mob{
-        flex:1;
-        justify-content:center;
-        background:rgba(41,128,185,.08);
-        border:1.5px solid rgba(41,128,185,.2);
-        color:var(--bleu);
-        padding:9px;
-        border-radius:8px;
-        font-family:'Plus Jakarta Sans',sans-serif;
-        font-size:.8rem;
-        font-weight:500;
-        cursor:pointer;
-        display:flex;
-        align-items:center;
-        gap:6px;
-        transition:background .2s;
-      }
-      .btn-edit-mob:hover{background:rgba(41,128,185,.15)}
-
-      .btn-del-mob{
-        flex:1;
-        justify-content:center;
-        background:rgba(192,57,43,.06);
-        border:1.5px solid rgba(192,57,43,.2);
-        color:var(--rouge);
-        padding:9px;
-        border-radius:8px;
-        font-family:'Plus Jakarta Sans',sans-serif;
-        font-size:.8rem;
-        font-weight:500;
-        cursor:pointer;
-        display:flex;
-        align-items:center;
-        gap:6px;
-        transition:background .2s;
-      }
-      .btn-del-mob:hover{background:rgba(192,57,43,.12)}
-
-      .btn-edit-mob svg,.btn-del-mob svg{
-        width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0
-      }
-
-      /* Barre d'actions mobile : colonne */
+      .carte-admin-nom{font-weight:600;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+      .carte-admin-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+      .carte-admin-actions{display:flex;gap:8px;}
+      .btn-edit-mob{flex:1;justify-content:center;background:rgba(41,128,185,.08);border:1.5px solid rgba(41,128,185,.2);color:var(--bleu);padding:9px;border-radius:8px;font-size:.8rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;}
+      .btn-del-mob{flex:1;justify-content:center;background:rgba(192,57,43,.06);border:1.5px solid rgba(192,57,43,.2);color:var(--rouge);padding:9px;border-radius:8px;font-size:.8rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;}
       .actions-bar{flex-direction:column;align-items:stretch}
       .btn-ajouter{justify-content:center}
-      .btn-import,.btn-export{justify-content:center}
       .recherche-admin{margin-left:0;min-width:unset;width:100%}
-
-      /* Stats en 2 colonnes sur mobile */
       .stats-grid{grid-template-columns:1fr 1fr}
     }
+    @media(min-width:769px){ .grille-cartes-admin{display:none} }
 
-    /* Masquer la grille de cartes sur desktop */
-    @media(min-width:769px){
-      .grille-cartes-admin{display:none}
-    }
-
-    /* ── MODAL FORMULAIRE ── */
     .form-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(20,15,10,.6);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0}
     .form-overlay.ouverte{display:flex}
     @media(min-width:640px){.form-overlay.ouverte{align-items:center;padding:20px}}
-
     .form-modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:95vh;overflow-y:auto;animation:slideUp .4s cubic-bezier(0.16,1,0.3,1)}
     @media(min-width:640px){.form-modal{border-radius:20px;animation:fadeInUp .35s cubic-bezier(0.16,1,0.3,1)}}
     @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
     @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
     .form-header{display:flex;align-items:center;justify-content:space-between;padding:24px 28px 0}
     .form-titre{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600}
     .btn-form-fermer{background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--texte-2);padding:4px;line-height:1}
-
     .form-corps{padding:24px 28px 28px;display:flex;flex-direction:column;gap:18px}
-
     .form-group{display:flex;flex-direction:column;gap:6px}
     .form-group-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     @media(max-width:480px){.form-group-row{grid-template-columns:1fr}}
-
     .form-label{font-size:.75rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--texte-2)}
     .form-input,.form-select,.form-textarea{padding:11px 14px;border:1.5px solid var(--pierre);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;background:#fff;color:var(--texte)}
     .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--or)}
     .form-textarea{resize:vertical;min-height:80px}
 
-    /* Aperçu image */
-    /* Grille d'aperçus multi-images */
-    .apercu-image{width:100%;height:140px;object-fit:cover;border-radius:8px;border:1.5px solid var(--pierre);display:none;margin-bottom:0}
-    .apercu-image.visible{display:block}
     .galerie-ajouter-wrap{display:flex;gap:8px}
     .galerie-ajouter-wrap .form-input{flex:1}
     .btn-ajouter-img{background:var(--or);color:var(--nav);border:none;padding:0 16px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s;flex-shrink:0}
@@ -246,14 +124,12 @@
     .galerie-preview-item:first-child img{border-color:var(--or)}
     .btn-suppr-img{position:absolute;top:-6px;right:-6px;width:20px;height:20px;background:var(--rouge);color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center;line-height:1;font-weight:700}
 
-    /* Tags (tailles / couleurs) */
     .tags-input-wrap{display:flex;flex-wrap:wrap;gap:7px;padding:10px;border:1.5px solid var(--pierre);border-radius:8px;min-height:48px;cursor:text;transition:border-color .2s;align-items:center}
     .tags-input-wrap:focus-within{border-color:var(--or)}
     .tag-chip{background:var(--fond);border:1px solid var(--pierre);padding:3px 10px;border-radius:100px;font-size:.78rem;display:inline-flex;align-items:center;gap:5px}
     .tag-chip button{background:none;border:none;cursor:pointer;color:var(--texte-2);font-size:.8rem;line-height:1;padding:0;transition:color .15s}
     .tag-chip button:hover{color:var(--rouge)}
     .tags-input{border:none;outline:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;flex:1;min-width:80px;background:transparent}
-
     .hint{font-size:.72rem;color:var(--texte-2);margin-top:-4px}
 
     .form-footer{display:flex;gap:10px;justify-content:flex-end;padding-top:6px;border-top:1px solid var(--pierre)}
@@ -262,7 +138,6 @@
     .btn-sauver{background:var(--or);color:var(--nav);padding:11px 28px;border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:background .25s}
     .btn-sauver:hover{background:#C9A54F}
 
-    /* Toast notification */
     .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--nav);color:#fff;padding:12px 24px;border-radius:100px;font-size:.85rem;z-index:1000;transition:transform .4s cubic-bezier(0.16,1,0.3,1);white-space:nowrap;border:1px solid rgba(181,137,63,.3)}
     .toast.visible{transform:translateX(-50%) translateY(0)}
 
@@ -272,31 +147,22 @@
 </head>
 <body>
 
-  <!-- =====================================================
-       PAGE DE CONNEXION
-  ====================================================== -->
+  <!-- PAGE DE CONNEXION -->
   <div class="login-page" id="login-page">
     <div class="login-box">
-      <div class="login-logo">Maison Élite</div>
-      <h2>Panneau d'administration CMS</h2>
-      <input class="login-input" type="password" id="login-pwd" placeholder="Mot de passe admin" onkeydown="if(event.key==='Enter')seConnecter()" />
-      <button class="login-btn" onclick="seConnecter()">Accéder →</button>
-      <p class="login-erreur" id="login-erreur">Mot de passe incorrect</p>
-      <p style="margin-top:20px;font-size:.72rem;color:rgba(255,255,255,.25);line-height:1.6">
-        🔐 Accès sécurisé · Administrateurs uniquement<br>
-        <span style="color:rgba(255,255,255,.15)">v2.0</span>
-      </p>
+      <div class="login-logo">ELTShop</div>
+      <h2>Administration sécurisée</h2>
+      <input class="login-input" type="email" id="login-email" placeholder="Adresse email" onkeydown="if(event.key==='Enter') document.getElementById('login-pwd').focus()" />
+      <input class="login-input" type="password" id="login-pwd" placeholder="Mot de passe" onkeydown="if(event.key==='Enter') seConnecter()" />
+      <button class="login-btn" onclick="seConnecter()">Se connecter →</button>
+      <p class="login-erreur" id="login-erreur">Identifiants incorrects</p>
     </div>
   </div>
 
-  <!-- =====================================================
-       PAGE ADMIN
-  ====================================================== -->
+  <!-- PAGE ADMIN -->
   <div class="admin-page" id="admin-page">
-
-    <!-- Topbar -->
     <div class="topbar">
-      <a href="index.html" class="topbar-logo">Maison Élite</a>
+      <a href="index.html" class="topbar-logo">ELTShop</a>
       <div class="topbar-droite">
         <a href="index.html" class="topbar-btn" target="_blank">
           <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -310,35 +176,17 @@
     </div>
 
     <div class="admin-main">
-
-      <!-- Stats -->
       <div class="stats-grid" id="stats-grid"></div>
 
-      <!-- Actions -->
       <div class="actions-bar">
         <button class="btn-ajouter" onclick="ouvrirFormulaire()">
           <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Ajouter un article
         </button>
-
-        <button class="btn-export" onclick="exporterJSON()">
-          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Exporter JSON
-        </button>
-
-        <label class="btn-import" style="cursor:pointer">
-          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Importer JSON
-          <input type="file" accept=".json" onchange="importerJSON(event)" style="display:none" />
-        </label>
-
         <input class="recherche-admin" type="text" placeholder="Rechercher…" oninput="rechercherAdmin(this.value)" />
       </div>
 
-      <!-- Tableau produits -->
       <div class="table-wrap" id="table-wrap">
-
-        <!-- VUE TABLEAU — Desktop uniquement -->
         <table>
           <thead>
             <tr>
@@ -353,23 +201,16 @@
           </thead>
           <tbody id="tbody"></tbody>
         </table>
-
-        <!-- VUE CARTES — Mobile uniquement -->
         <div class="grille-cartes-admin" id="cartes-admin"></div>
-
-        <!-- Message aucun résultat -->
         <div class="vide" id="vide" style="display:none">
           <p>📦</p>
           <p>Aucun article trouvé</p>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- =====================================================
-       FORMULAIRE AJOUT / MODIFICATION
-  ====================================================== -->
+  <!-- FORMULAIRE AJOUT / MODIFICATION -->
   <div class="form-overlay" id="form-overlay" onclick="fermerSiOverlay(event)">
     <div class="form-modal" id="form-modal">
       <div class="form-header">
@@ -378,17 +219,11 @@
       </div>
 
       <div class="form-corps">
-
-        <!-- Aperçu image -->
-        <img id="apercu-img" class="apercu-image" src="" alt="Aperçu" />
-
         <div class="form-group-row">
-          <!-- Nom -->
           <div class="form-group">
             <label class="form-label">Nom de l'article *</label>
             <input class="form-input" type="text" id="f-nom" placeholder="Ex : Robe Élégance" required />
           </div>
-          <!-- Catégorie -->
           <div class="form-group">
             <label class="form-label">Catégorie *</label>
             <input class="form-input" type="text" id="f-cat" placeholder="Ex : Robes, Hauts, Bas…" required list="cats-list" />
@@ -397,12 +232,10 @@
         </div>
 
         <div class="form-group-row">
-          <!-- Prix -->
           <div class="form-group">
             <label class="form-label">Prix *</label>
             <input class="form-input" type="number" id="f-prix" placeholder="Ex : 25000" required min="0" />
           </div>
-          <!-- Devise -->
           <div class="form-group">
             <label class="form-label">Devise</label>
             <select class="form-select" id="f-devise">
@@ -411,42 +244,33 @@
           </div>
         </div>
 
-        <!-- Description -->
         <div class="form-group">
           <label class="form-label">Description</label>
-          <textarea class="form-textarea" id="f-desc" placeholder="Description courte et accrocheuse de l'article…"></textarea>
+          <textarea class="form-textarea" id="f-desc" placeholder="Description de l'article…"></textarea>
         </div>
 
-        <!-- Image principale + galerie -->
         <div class="form-group">
-          <label class="form-label">Image principale * <span style="font-weight:300;text-transform:none;letter-spacing:0">(obligatoire)</span></label>
+          <label class="form-label">Galerie d'images *</label>
           <div class="galerie-ajouter-wrap">
             <input class="form-input" type="url" id="f-img-input" placeholder="https://…" />
             <button class="btn-ajouter-img" type="button" onclick="ajouterImageGalerie()">+ Ajouter</button>
           </div>
-          <p class="hint">Appuyez sur Entrée ou cliquez "+ Ajouter". La 1ère image est la principale (bordure dorée).</p>
-          <!-- Miniatures galerie -->
+          <p class="hint">La 1ère image (encadrée en or) sera l'image principale.</p>
           <div class="galerie-previews" id="galerie-previews"></div>
-          <!-- Champ caché pour la valeur principale -->
-          <input type="hidden" id="f-img" />
         </div>
 
-        <!-- Tailles -->
         <div class="form-group">
           <label class="form-label">Tailles disponibles</label>
           <div class="tags-input-wrap" id="tailles-wrap" onclick="document.getElementById('tailles-input').focus()">
             <input class="tags-input" id="tailles-input" placeholder="Tapez XS, S, M… puis Entrée" onkeydown="ajouterTag(event,'tailles')" />
           </div>
-          <p class="hint">Appuyez sur Entrée ou virgule après chaque taille</p>
         </div>
 
-        <!-- Couleurs -->
         <div class="form-group">
           <label class="form-label">Couleurs disponibles</label>
           <div class="tags-input-wrap" id="couleurs-wrap" onclick="document.getElementById('couleurs-input').focus()">
             <input class="tags-input" id="couleurs-input" placeholder="Tapez Noir, Blanc… puis Entrée" onkeydown="ajouterTag(event,'couleurs')" />
           </div>
-          <p class="hint">Appuyez sur Entrée ou virgule après chaque couleur</p>
         </div>
 
         <div class="form-footer">
@@ -457,157 +281,100 @@
     </div>
   </div>
 
-  <!-- Toast notification -->
   <div class="toast" id="toast"></div>
-
-  <!-- Input fichier caché (import) -->
 
   <script>
     /* =====================================================
-       ⚙️ CONFIGURATION ADMIN
-       !! Changez ce mot de passe !!
+       INITIALISATION SUPABASE
+       !! REMPLACE CES DEUX VALEURS PAR TES CLES SUPABASE !!
     ===================================================== */
-    /* =====================================================
-       🔐 SÉCURITÉ — MOT DE PASSE HASHÉ (SHA-256)
-       
-       Le mot de passe réel N'EST PAS stocké ici.
-       Seul son empreinte SHA-256 est présente dans le code.
-       
-       Pour changer le mot de passe :
-       1. Allez sur https://emn178.github.io/online-tools/sha256.html
-       2. Tapez votre nouveau mot de passe
-       3. Copiez le hash généré et remplacez la valeur ci-dessous
-       
-       Mot de passe actuel : elite2025
-       (ne jamais écrire le vrai mot de passe ici)
-    ===================================================== */
-    const HASH_MOT_DE_PASSE = "667dec740927fa891ede21f1f2f47889ba63a17ab0f14e66c70a7fb109a31d81";
-    const CLE_STORAGE       = "elite_produits";
-    
-    /* Tentatives de connexion (anti brute-force) */
-    const MAX_TENTATIVES  = 5;
-    const DELAI_BLOCAGE   = 15 * 60 * 1000; // 15 minutes en millisecondes
-    let   tentatives      = parseInt(sessionStorage.getItem('elite_tentatives') || '0');
-    let   bloquéJusqu     = parseInt(sessionStorage.getItem('elite_bloque') || '0');
+    const supabaseUrl = 'https://ptjqyahqfxiycuulvelj.supabase.co/rest/v1/';
+    const supabaseKey = 'sb_publishable_o5tQyfF9ma5hCTLXyBrdDw_gQB9OShu';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    /* =====================================================
-       ÉTAT
-    ===================================================== */
-    let produits        = [];
-    let produitEnEdition = null; // null = ajout, id = modification
-    let taillesEnCours  = [];
+    /* État de l'application */
+    let produits = [];
+    let produitEnEdition = null; 
+    let taillesEnCours = [];
     let couleursEnCours = [];
-    let imagesEnCours   = []; // tableau de toutes les URLs (index 0 = principale)
-    let termeRecherche  = '';
+    let imagesEnCours = []; 
+    let termeRecherche = '';
 
     /* =====================================================
-       CONNEXION / DÉCONNEXION
+       SÉCURITÉ: FONCTION ANTI-XSS
     ===================================================== */
-    /* Hasher un texte avec SHA-256 (API Web Crypto, native dans tous les navigateurs) */
-    async function hacherSHA256(texte) {
-      const encoder = new TextEncoder();
-      const data    = encoder.encode(texte);
-      const buffer  = await crypto.subtle.digest('SHA-256', data);
-      // Convertir le buffer en chaîne hexadécimale
-      return Array.from(new Uint8Array(buffer))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
+    function escapeHTML(str) {
+      if (typeof str !== 'string') return str;
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag] || tag));
     }
 
-    async function seConnecter() {
-      const maintenant = Date.now();
-      const errEl = document.getElementById('login-erreur');
-      const btn   = document.querySelector('.login-btn');
-
-      /* ── Vérifier si le compte est bloqué ── */
-      if (maintenant < bloquéJusqu) {
-        const restant = Math.ceil((bloquéJusqu - maintenant) / 60000);
-        errEl.textContent = `Trop de tentatives. Réessayez dans ${restant} minute(s).`;
-        errEl.classList.add('visible');
-        return;
-      }
-
-      const pwd = document.getElementById('login-pwd').value;
-      if (!pwd) return;
-
-      /* ── Feedback visuel pendant le hash ── */
-      btn.textContent = '…';
-      btn.disabled = true;
-
-      const hash = await hacherSHA256(pwd);
-
-      btn.textContent = 'Accéder →';
-      btn.disabled = false;
-
-      if (hash === HASH_MOT_DE_PASSE) {
-        /* ✅ Succès : réinitialiser les tentatives */
-        sessionStorage.setItem('elite_admin', 'ok');
-        sessionStorage.removeItem('elite_tentatives');
-        sessionStorage.removeItem('elite_bloque');
+    /* =====================================================
+       AUTHENTIFICATION
+    ===================================================== */
+    // Écouteur d'état de connexion Supabase
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('admin-page').classList.add('visible');
         chargerDonnees();
       } else {
-        /* ❌ Échec : incrémenter les tentatives */
-        tentatives++;
-        sessionStorage.setItem('elite_tentatives', tentatives);
-        const restantes = MAX_TENTATIVES - tentatives;
+        document.getElementById('login-page').style.display = 'flex';
+        document.getElementById('admin-page').classList.remove('visible');
+      }
+    });
 
-        if (tentatives >= MAX_TENTATIVES) {
-          /* Bloquer pour 15 minutes */
-          const finBlocage = Date.now() + DELAI_BLOCAGE;
-          sessionStorage.setItem('elite_bloque', finBlocage);
-          bloquéJusqu = finBlocage;
-          errEl.textContent = 'Compte bloqué 15 minutes après trop de tentatives.';
-        } else {
-          errEl.textContent = `Mot de passe incorrect. ${restantes} tentative(s) restante(s).`;
-        }
+    async function seConnecter() {
+      const email = document.getElementById('login-email').value;
+      const pwd = document.getElementById('login-pwd').value;
+      const errEl = document.getElementById('login-erreur');
+      const btn = document.querySelector('.login-btn');
 
+      if (!email || !pwd) return;
+
+      btn.textContent = '…';
+      btn.disabled = true;
+      errEl.classList.remove('visible');
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: pwd
+      });
+
+      btn.textContent = 'Se connecter →';
+      btn.disabled = false;
+
+      if (error) {
+        errEl.textContent = 'Identifiants incorrects ou erreur réseau.';
         errEl.classList.add('visible');
-        document.getElementById('login-pwd').value = '';
-        document.getElementById('login-pwd').focus();
       }
     }
 
-    function seDeconnecter() {
-      sessionStorage.removeItem('elite_admin');
-      location.reload();
-    }
-
-    // Vérifier si déjà connecté
-    if (sessionStorage.getItem('elite_admin') === 'ok') {
-      document.getElementById('login-page').style.display = 'none';
-      document.getElementById('admin-page').classList.add('visible');
+    async function seDeconnecter() {
+      await supabase.auth.signOut();
     }
 
     /* =====================================================
-       CHARGEMENT DES DONNÉES
+       GESTION DES DONNÉES (CRUD)
     ===================================================== */
     async function chargerDonnees() {
-      const stockage = localStorage.getItem(CLE_STORAGE);
-      if (stockage) {
-        produits = JSON.parse(stockage);
-      } else {
-        // Charger depuis products.json si localStorage vide
-        try {
-          const rep = await fetch('./products.json');
-          produits = await rep.json();
-        } catch {
-          produits = [];
-        }
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        afficherToast('❌ Erreur de chargement des produits');
+        console.error(error);
+        return;
       }
+      produits = data || [];
       rendrePage();
     }
 
     /* =====================================================
-       SAUVEGARDE DANS LOCALSTORAGE
-    ===================================================== */
-    function sauvegarderDonnees() {
-      localStorage.setItem(CLE_STORAGE, JSON.stringify(produits));
-    }
-
-    /* =====================================================
-       AFFICHAGE DU TABLEAU
+       AFFICHAGE
     ===================================================== */
     function rendrePage() {
       mettreAJourStats();
@@ -616,107 +383,67 @@
     }
 
     function mettreAJourStats() {
-      const cats     = [...new Set(produits.map(p => p.categorie))];
-      const valTot   = produits.reduce((s, p) => s + p.prix, 0);
-      const prixMoy  = produits.length ? Math.round(valTot / produits.length) : 0;
+      const cats = [...new Set(produits.map(p => p.categorie))];
+      const valTot = produits.reduce((s, p) => s + p.prix, 0);
+      const prixMoy = produits.length ? Math.round(valTot / produits.length) : 0;
 
       document.getElementById('stats-grid').innerHTML = `
-        <div class="stat-card">
-          <div class="stat-label">Articles</div>
-          <div class="stat-val">${produits.length}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Catégories</div>
-          <div class="stat-val">${cats.length}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Prix moyen</div>
-          <div class="stat-val">${prixMoy.toLocaleString('fr-FR')} <span>FCFA</span></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Valeur totale</div>
-          <div class="stat-val">${valTot.toLocaleString('fr-FR')} <span>FCFA</span></div>
-        </div>
+        <div class="stat-card"><div class="stat-label">Articles</div><div class="stat-val">${produits.length}</div></div>
+        <div class="stat-card"><div class="stat-label">Catégories</div><div class="stat-val">${cats.length}</div></div>
+        <div class="stat-card"><div class="stat-label">Prix moyen</div><div class="stat-val">${prixMoy.toLocaleString('fr-FR')} <span>FCFA</span></div></div>
+        <div class="stat-card"><div class="stat-label">Valeur totale</div><div class="stat-val">${valTot.toLocaleString('fr-FR')} <span>FCFA</span></div></div>
       `;
     }
 
-    /* Placeholder image SVG inline */
     const IMG_ERR = "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2272%22 height=%2272%22><rect width=%2272%22 height=%2272%22 fill=%22%23F0EBE3%22/></svg>";
 
     function rendrTableau() {
       const terme = termeRecherche.toLowerCase();
       const filtres = terme
         ? produits.filter(p =>
-            p.nom.toLowerCase().includes(terme) ||
-            p.categorie.toLowerCase().includes(terme) ||
-            p.description?.toLowerCase().includes(terme)
+            p.nom.toLowerCase().includes(terme) || p.categorie.toLowerCase().includes(terme)
           )
         : produits;
 
-      const tbody  = document.getElementById('tbody');
+      const tbody = document.getElementById('tbody');
       const cartes = document.getElementById('cartes-admin');
-      const vide   = document.getElementById('vide');
+      const vide = document.getElementById('vide');
 
       if (!filtres.length) {
-        tbody.innerHTML  = '';
-        cartes.innerHTML = '';
-        vide.style.display = 'block';
+        tbody.innerHTML = ''; cartes.innerHTML = ''; vide.style.display = 'block';
         return;
       }
       vide.style.display = 'none';
 
-      /* ── VUE TABLEAU (desktop) ── */
+      // Desktop
       tbody.innerHTML = filtres.map(p => `
-        <tr data-id="${p.id}">
-          <td class="td-image">
-            <img src="${p.image}" alt="${p.nom}" onerror="this.src='${IMG_ERR}'" />
-          </td>
-          <td class="td-nom">${p.nom}</td>
-          <td><span class="td-cat">${p.categorie}</span></td>
-          <td class="td-prix">${p.prix.toLocaleString('fr-FR')} ${p.devise}</td>
-          <td class="col-tailles">
-            <div class="td-tags">${p.tailles.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
-          </td>
-          <td class="col-couleurs">
-            <div class="td-tags">${p.couleurs.map(c=>`<span class="tag">${c}</span>`).join('')}</div>
-          </td>
+        <tr>
+          <td class="td-image"><img src="${escapeHTML(p.image)}" alt="img" onerror="this.src='${IMG_ERR}'" /></td>
+          <td class="td-nom">${escapeHTML(p.nom)}</td>
+          <td><span class="td-cat">${escapeHTML(p.categorie)}</span></td>
+          <td class="td-prix">${p.prix.toLocaleString('fr-FR')} ${escapeHTML(p.devise)}</td>
+          <td class="col-tailles"><div class="td-tags">${p.tailles.map(t=>`<span class="tag">${escapeHTML(t)}</span>`).join('')}</div></td>
+          <td class="col-couleurs"><div class="td-tags">${p.couleurs.map(c=>`<span class="tag">${escapeHTML(c)}</span>`).join('')}</div></td>
           <td style="text-align:right">
-            <button class="btn-edit" onclick="modifierProduit(${p.id})">
-              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              Modifier
-            </button>
-            <button class="btn-del" onclick="supprimerProduit(${p.id})">
-              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-              Supprimer
-            </button>
+            <button class="btn-edit" onclick="modifierProduit(${p.id})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="btn-del" onclick="supprimerProduit(${p.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
           </td>
         </tr>
       `).join('');
 
-      /* ── VUE CARTES (mobile) ── */
+      // Mobile
       cartes.innerHTML = filtres.map(p => `
         <div class="carte-admin">
-          <img
-            class="carte-admin-img"
-            src="${p.image}"
-            alt="${p.nom}"
-            onerror="this.src='${IMG_ERR}'"
-          />
+          <img class="carte-admin-img" src="${escapeHTML(p.image)}" onerror="this.src='${IMG_ERR}'" />
           <div class="carte-admin-infos">
-            <div class="carte-admin-nom">${p.nom}</div>
+            <div class="carte-admin-nom">${escapeHTML(p.nom)}</div>
             <div class="carte-admin-meta">
-              <span class="td-cat">${p.categorie}</span>
-              <span class="td-prix">${p.prix.toLocaleString('fr-FR')} ${p.devise}</span>
+              <span class="td-cat">${escapeHTML(p.categorie)}</span>
+              <span class="td-prix">${p.prix.toLocaleString('fr-FR')} ${escapeHTML(p.devise)}</span>
             </div>
             <div class="carte-admin-actions">
-              <button class="btn-edit-mob" onclick="modifierProduit(${p.id})">
-                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Modifier
-              </button>
-              <button class="btn-del-mob" onclick="supprimerProduit(${p.id})">
-                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-                Supprimer
-              </button>
+              <button class="btn-edit-mob" onclick="modifierProduit(${p.id})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              <button class="btn-del-mob" onclick="supprimerProduit(${p.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
             </div>
           </div>
         </div>
@@ -725,8 +452,7 @@
 
     function remplirDatalistCats() {
       const cats = [...new Set(produits.map(p => p.categorie))];
-      document.getElementById('cats-list').innerHTML =
-        cats.map(c => `<option value="${c}">`).join('');
+      document.getElementById('cats-list').innerHTML = cats.map(c => `<option value="${escapeHTML(c)}">`).join('');
     }
 
     function rechercherAdmin(val) {
@@ -735,32 +461,23 @@
     }
 
     /* =====================================================
-       FORMULAIRE — OUVRIR
+       FORMULAIRE
     ===================================================== */
     function ouvrirFormulaire(p = null) {
       produitEnEdition = p ? p.id : null;
-      taillesEnCours   = p ? [...p.tailles]  : [];
-      couleursEnCours  = p ? [...p.couleurs] : [];
-
-      // Charger les images : images[] existant ou image seule
-      if (p) {
-        imagesEnCours = (p.images && p.images.length > 0) ? [...p.images] : (p.image ? [p.image] : []);
-      } else {
-        imagesEnCours = [];
-      }
+      taillesEnCours = p ? [...p.tailles] : [];
+      couleursEnCours = p ? [...p.couleurs] : [];
+      imagesEnCours = p ? [...p.images] : [];
 
       document.getElementById('form-titre').textContent = p ? 'Modifier l\'article' : 'Ajouter un article';
-      document.getElementById('f-nom').value    = p?.nom         || '';
-      document.getElementById('f-cat').value    = p?.categorie   || '';
-      document.getElementById('f-prix').value   = p?.prix        || '';
-      document.getElementById('f-devise').value = p?.devise      || 'FCFA';
-      document.getElementById('f-desc').value   = p?.description || '';
+      document.getElementById('f-nom').value = p ? p.nom : '';
+      document.getElementById('f-cat').value = p ? p.categorie : '';
+      document.getElementById('f-prix').value = p ? p.prix : '';
+      document.getElementById('f-devise').value = p ? p.devise : 'FCFA';
+      document.getElementById('f-desc').value = p ? p.description : '';
       document.getElementById('f-img-input').value = '';
 
-      rendreGalerieForm();
-      rendreTags('tailles');
-      rendreTags('couleurs');
-
+      rendreGalerieForm(); rendreTags('tailles'); rendreTags('couleurs');
       document.getElementById('form-overlay').classList.add('ouverte');
     }
 
@@ -773,199 +490,107 @@
       document.getElementById('form-overlay').classList.remove('ouverte');
       produitEnEdition = null;
     }
-
-    function fermerSiOverlay(e) {
-      if (e.target === document.getElementById('form-overlay')) fermerFormulaire();
-    }
+    function fermerSiOverlay(e) { if (e.target === document.getElementById('form-overlay')) fermerFormulaire(); }
 
     /* =====================================================
-       GALERIE D'IMAGES — Formulaire admin
+       IMAGES ET TAGS
     ===================================================== */
-
-    /* Ajouter une image à la galerie */
     function ajouterImageGalerie() {
-      const input = document.getElementById('f-img-input');
-      const url   = input.value.trim();
-      if (!url || !url.startsWith('http')) {
-        afficherToast('⚠️ Entrez une URL valide commençant par http');
-        return;
-      }
-      if (!imagesEnCours.includes(url)) {
-        imagesEnCours.push(url);
-        rendreGalerieForm();
-      }
-      input.value = '';
-      input.focus();
+      const url = document.getElementById('f-img-input').value.trim();
+      if (!url.startsWith('http')) return afficherToast('⚠️ URL invalide');
+      if (!imagesEnCours.includes(url)) { imagesEnCours.push(url); rendreGalerieForm(); }
+      document.getElementById('f-img-input').value = '';
     }
-
-    /* Ajouter via touche Entrée dans le champ */
-    document.addEventListener('DOMContentLoaded', () => {
-      const inp = document.getElementById('f-img-input');
-      if (inp) inp.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); ajouterImageGalerie(); }
-      });
-    });
-
-    /* Supprimer une image de la galerie */
-    function supprimerImageGalerie(index) {
-      imagesEnCours.splice(index, 1);
-      rendreGalerieForm();
-    }
-
-    /* Rendre les miniatures dans le formulaire */
+    function supprimerImageGalerie(idx) { imagesEnCours.splice(idx, 1); rendreGalerieForm(); }
     function rendreGalerieForm() {
       const wrap = document.getElementById('galerie-previews');
-      const champCache = document.getElementById('f-img');
-
-      if (imagesEnCours.length === 0) {
-        wrap.innerHTML = '';
-        champCache.value = '';
-        return;
-      }
-
-      // La première image est la principale
-      champCache.value = imagesEnCours[0];
-
       wrap.innerHTML = imagesEnCours.map((url, i) => `
         <div class="galerie-preview-item">
-          <img src="${url}" alt="Photo ${i+1}" onerror="this.style.opacity='.3'" title="${i===0?'Image principale':'Photo '+(i+1)}" />
-          <button class="btn-suppr-img" type="button" onclick="supprimerImageGalerie(${i})" title="Supprimer">✕</button>
+          <img src="${escapeHTML(url)}" />
+          <button class="btn-suppr-img" type="button" onclick="supprimerImageGalerie(${i})">✕</button>
         </div>
       `).join('');
     }
 
-    /* =====================================================
-       GESTION DES TAGS (tailles / couleurs)
-    ===================================================== */
-    function ajouterTag(event, type) {
-      if (event.key !== 'Enter' && event.key !== ',') return;
-      event.preventDefault();
+    function ajouterTag(e, type) {
+      if (e.key !== 'Enter' && e.key !== ',') return;
+      e.preventDefault();
       const input = document.getElementById(`${type}-input`);
-      const val   = input.value.trim().replace(/,$/, '');
+      const val = input.value.trim().replace(/,$/, '');
       if (!val) return;
-
       const arr = type === 'tailles' ? taillesEnCours : couleursEnCours;
-      if (!arr.includes(val)) {
-        arr.push(val);
-        rendreTags(type);
-      }
+      if (!arr.includes(val)) { arr.push(val); rendreTags(type); }
       input.value = '';
     }
-
     function supprimerTag(type, val) {
-      if (type === 'tailles')  taillesEnCours  = taillesEnCours.filter(t => t !== val);
-      else                     couleursEnCours = couleursEnCours.filter(c => c !== val);
+      if (type === 'tailles') taillesEnCours = taillesEnCours.filter(t => t !== val);
+      else couleursEnCours = couleursEnCours.filter(c => c !== val);
       rendreTags(type);
     }
-
     function rendreTags(type) {
-      const arr  = type === 'tailles' ? taillesEnCours : couleursEnCours;
+      const arr = type === 'tailles' ? taillesEnCours : couleursEnCours;
       const wrap = document.getElementById(`${type}-wrap`);
       const input = document.getElementById(`${type}-input`);
       wrap.innerHTML = '';
       arr.forEach(v => {
-        const chip = document.createElement('span');
-        chip.className = 'tag-chip';
-        chip.innerHTML = `${v}<button onclick="supprimerTag('${type}','${v}')" type="button">×</button>`;
-        wrap.appendChild(chip);
+        const span = document.createElement('span');
+        span.className = 'tag-chip';
+        span.innerHTML = `${escapeHTML(v)}<button onclick="supprimerTag('${type}','${escapeHTML(v)}')">×</button>`;
+        wrap.appendChild(span);
       });
       wrap.appendChild(input);
     }
 
     /* =====================================================
-       SAUVEGARDER UN PRODUIT
+       SAUVEGARDE ET SUPPRESSION SUPABASE
     ===================================================== */
-    function sauvegarderProduit() {
-      const nom   = document.getElementById('f-nom').value.trim();
-      const cat   = document.getElementById('f-cat').value.trim();
-      const prix  = parseFloat(document.getElementById('f-prix').value);
-      const devise= document.getElementById('f-devise').value;
-      const desc  = document.getElementById('f-desc').value.trim();
-      const img   = document.getElementById('f-img').value.trim();
-
-      // Validation
-      if (!nom || !cat || isNaN(prix) || !img) {
-        afficherToast('⚠️ Veuillez remplir tous les champs obligatoires (*)', 'erreur');
-        return;
+    async function sauvegarderProduit() {
+      const btn = document.querySelector('.btn-sauver');
+      const nom = document.getElementById('f-nom').value.trim();
+      const cat = document.getElementById('f-cat').value.trim();
+      const prix = parseFloat(document.getElementById('f-prix').value);
+      const devise = document.getElementById('f-devise').value;
+      const desc = document.getElementById('f-desc').value.trim();
+      
+      if (!nom || !cat || isNaN(prix) || imagesEnCours.length === 0) {
+        return afficherToast('⚠️ Remplissez tous les champs requis et ajoutez une image.');
       }
+
+      btn.disabled = true; btn.textContent = 'Enregistrement...';
+
+      const dataProd = {
+        nom, categorie: cat, prix, devise, description: desc,
+        image: imagesEnCours[0], images: imagesEnCours,
+        tailles: taillesEnCours, couleurs: couleursEnCours
+      };
 
       if (produitEnEdition !== null) {
-        // Modification
-        const idx = produits.findIndex(p => p.id === produitEnEdition);
-        produits[idx] = {
-          ...produits[idx],
-          nom, categorie:cat, prix, devise, description:desc,
-          image:img,
-          images: imagesEnCours.length > 0 ? [...imagesEnCours] : [img],
-          tailles:taillesEnCours, couleurs:couleursEnCours
-        };
-        afficherToast('✅ Article modifié avec succès');
+        const { error } = await supabase.from('products').update(dataProd).eq('id', produitEnEdition);
+        if (error) afficherToast('❌ Erreur de modification');
+        else afficherToast('✅ Article modifié avec succès');
       } else {
-        // Ajout
-        const nouvelId = Math.max(0, ...produits.map(p => p.id)) + 1;
-        produits.push({
-          id:nouvelId, nom, categorie:cat, prix, devise, description:desc,
-          image:img,
-          images: imagesEnCours.length > 0 ? [...imagesEnCours] : [img],
-          tailles:taillesEnCours, couleurs:couleursEnCours
-        });
-        afficherToast('✅ Article ajouté avec succès');
+        const { error } = await supabase.from('products').insert([dataProd]);
+        if (error) afficherToast('❌ Erreur lors de l\'ajout');
+        else afficherToast('✅ Article ajouté avec succès');
       }
 
-      sauvegarderDonnees();
+      btn.disabled = false; btn.textContent = '💾 Sauvegarder';
       fermerFormulaire();
-      rendrePage();
+      chargerDonnees();
+    }
+
+    async function supprimerProduit(id) {
+      if (!confirm(`Supprimer cet article ? Action irréversible.`)) return;
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) afficherToast('❌ Erreur lors de la suppression');
+      else {
+        afficherToast('🗑️ Article supprimé');
+        chargerDonnees();
+      }
     }
 
     /* =====================================================
-       SUPPRIMER UN PRODUIT
-    ===================================================== */
-    function supprimerProduit(id) {
-      const p = produits.find(x => x.id === id);
-      if (!confirm(`Supprimer "${p?.nom}" ? Cette action est irréversible.`)) return;
-      produits = produits.filter(x => x.id !== id);
-      sauvegarderDonnees();
-      rendrePage();
-      afficherToast('🗑️ Article supprimé');
-    }
-
-    /* =====================================================
-       EXPORT / IMPORT JSON
-    ===================================================== */
-    function exporterJSON() {
-      const blob = new Blob([JSON.stringify(produits, null, 2)], { type: 'application/json' });
-      const lien = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = lien;
-      a.download = `maison-elite-produits-${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
-      URL.revokeObjectURL(lien);
-      afficherToast('📥 Fichier JSON exporté');
-    }
-
-    function importerJSON(event) {
-      const fichier = event.target.files[0];
-      if (!fichier) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        try {
-          const data = JSON.parse(e.target.result);
-          if (!Array.isArray(data)) throw new Error('Format invalide');
-          if (!confirm(`Importer ${data.length} article(s) ? Cela remplacera les données actuelles.`)) return;
-          produits = data;
-          sauvegarderDonnees();
-          rendrePage();
-          afficherToast(`✅ ${data.length} articles importés`);
-        } catch {
-          afficherToast('❌ Fichier JSON invalide', 'erreur');
-        }
-      };
-      reader.readAsText(fichier);
-      event.target.value = ''; // Reset input
-    }
-
-    /* =====================================================
-       TOAST NOTIFICATION
+       UTILITIES
     ===================================================== */
     function afficherToast(msg) {
       const t = document.getElementById('toast');
@@ -974,17 +599,7 @@
       setTimeout(() => t.classList.remove('visible'), 3000);
     }
 
-    /* =====================================================
-       TOUCHE ÉCHAP
-    ===================================================== */
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') fermerFormulaire();
-    });
-
-    /* =====================================================
-       DÉMARRAGE (si déjà connecté)
-    ===================================================== */
-    if (sessionStorage.getItem('elite_admin') === 'ok') chargerDonnees();
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') fermerFormulaire(); });
   </script>
 </body>
 </html>
