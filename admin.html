@@ -283,14 +283,16 @@
 
   <div class="toast" id="toast"></div>
 
-  <script>
+ <script>
     /* =====================================================
        INITIALISATION SUPABASE
        !! REMPLACE CES DEUX VALEURS PAR TES CLES SUPABASE !!
     ===================================================== */
-    const supabaseUrl = 'https://ptjqyahqfxiycuulvelj.supabase.co';
+    const supabaseUrl = 'https://ptjqyahqfxiycuulvelj.supabase.co/rest/v1/';
     const supabaseKey = 'sb_publishable_o5tQyfF9ma5hCTLXyBrdDw_gQB9OShu';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // CORRECTION ICI : On l'appelle supabaseClient pour éviter le conflit
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     /* État de l'application */
     let produits = [];
@@ -314,7 +316,7 @@
        AUTHENTIFICATION
     ===================================================== */
     // Écouteur d'état de connexion Supabase
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
       if (session) {
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('admin-page').classList.add('visible');
@@ -337,7 +339,7 @@
       btn.disabled = true;
       errEl.classList.remove('visible');
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
         email: email,
         password: pwd
       });
@@ -352,14 +354,14 @@
     }
 
     async function seDeconnecter() {
-      await supabase.auth.signOut();
+      await supabaseClient.auth.signOut();
     }
 
     /* =====================================================
        GESTION DES DONNÉES (CRUD)
     ===================================================== */
     async function chargerDonnees() {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('products')
         .select('*')
         .order('created_at', { ascending: false });
@@ -535,7 +537,7 @@
       arr.forEach(v => {
         const span = document.createElement('span');
         span.className = 'tag-chip';
-        span.innerHTML = `${escapeHTML(v)}<button onclick="supprimerTag('${type}','${escapeHTML(v)}')">×</button>`;
+        span.innerHTML = `${escapeHTML(v)}<button type="button" onclick="supprimerTag('${type}','${escapeHTML(v)}')">×</button>`;
         wrap.appendChild(span);
       });
       wrap.appendChild(input);
@@ -565,11 +567,11 @@
       };
 
       if (produitEnEdition !== null) {
-        const { error } = await supabase.from('products').update(dataProd).eq('id', produitEnEdition);
+        const { error } = await supabaseClient.from('products').update(dataProd).eq('id', produitEnEdition);
         if (error) afficherToast('❌ Erreur de modification');
         else afficherToast('✅ Article modifié avec succès');
       } else {
-        const { error } = await supabase.from('products').insert([dataProd]);
+        const { error } = await supabaseClient.from('products').insert([dataProd]);
         if (error) afficherToast('❌ Erreur lors de l\'ajout');
         else afficherToast('✅ Article ajouté avec succès');
       }
@@ -581,7 +583,7 @@
 
     async function supprimerProduit(id) {
       if (!confirm(`Supprimer cet article ? Action irréversible.`)) return;
-      const { error } = await supabase.from('products').delete().eq('id', id);
+      const { error } = await supabaseClient.from('products').delete().eq('id', id);
       if (error) afficherToast('❌ Erreur lors de la suppression');
       else {
         afficherToast('🗑️ Article supprimé');
