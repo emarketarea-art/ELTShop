@@ -10,6 +10,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    /* =======================================================
+       STYLES GLOBAUX
+    ======================================================= */
     :root {
       --fond: #F7F3EE; --carte: #FFFFFF; --texte: #1A1410; --texte-2: #7A6A5A;
       --or: #B5893F; --or-clair: #D4AE6A; --pierre: #E8DDD2; --nav: #140F0A;
@@ -54,49 +57,64 @@
     .filtre-pill.actif{background:var(--texte);color:#fff;border-color:var(--texte)}
 
     .catalogue{max-width:1200px;margin:0 auto;padding:40px clamp(16px,5%,60px)}
-    .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px}
+    .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px, 1fr));gap:15px}
+    @media(min-width:768px){.grille{grid-template-columns:repeat(auto-fill,minmax(240px, 1fr));gap:24px}}
     
     /* CARTE PRODUIT */
     .carte{background:#fff;border-radius:var(--rayon);overflow:hidden;box-shadow:var(--ombre);cursor:pointer;position:relative}
-    .carte-image{height:300px;background:var(--pierre);position:relative}
+    .carte-image{height:220px;background:var(--pierre);position:relative}
+    @media(min-width:768px){.carte-image{height:300px;}}
     .carte-image img{width:100%;height:100%;object-fit:cover}
     .badge-promo{position:absolute;top:10px;right:10px;background:var(--rouge);color:#fff;font-size:.7rem;font-weight:bold;padding:4px 10px;border-radius:100px}
     .badge-epuise{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);color:#fff;padding:10px 20px;border-radius:10px;font-weight:bold;letter-spacing:2px}
     
-    .carte-corps{padding:20px}
-    .carte-nom{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;line-height:1.2;margin-bottom:8px}
-    .prix-actuel{font-size:1.1rem;font-weight:700;color:var(--or)}
-    .prix-barre{font-size:.85rem;color:var(--texte-2);text-decoration:line-through;margin-left:8px}
-    .btn-voir{width:100%;padding:12px;background:var(--texte);color:#fff;border:none;border-radius:8px;margin-top:16px;cursor:pointer;font-weight:600;text-transform:uppercase;font-size:.8rem}
+    .carte-corps{padding:15px}
+    .carte-nom{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;line-height:1.2;margin-bottom:8px}
+    .prix-actuel{font-size:1rem;font-weight:700;color:var(--or)}
+    .prix-barre{font-size:.8rem;color:var(--texte-2);text-decoration:line-through;margin-left:8px}
+    .btn-voir{width:100%;padding:10px;background:var(--texte);color:#fff;border:none;border-radius:8px;margin-top:12px;cursor:pointer;font-weight:600;text-transform:uppercase;font-size:.75rem}
 
-    /* MODAL PRODUIT (VUE ALIBABA) */
+    /* MODAL PRODUIT */
     .overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);align-items:flex-end;}
     .overlay.ouverte{display:flex}
     
-    .modal{width:100%;max-width:500px;margin:0 auto;background:#fff;border-radius:24px 24px 0 0;max-height:92vh;display:flex;flex-direction:column;animation:slideUp .3s}
+    .modal{width:100%;max-width:500px;margin:0 auto;background:#fff;border-radius:24px 24px 0 0;max-height:92vh;display:flex;flex-direction:column;animation:slideUp .3s;position:relative;}
     @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
     
-    /* Galerie swipeable (Alibaba style) */
-    .galerie-container{position:relative;width:100%;height:400px;flex-shrink:0;background:var(--pierre)}
+    /* Boutons Partage & Zoom & Fermer */
+    .btn-fermer{position:absolute;top:15px;right:15px;background:rgba(0,0,0,.5);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:10;backdrop-filter:blur(4px)}
+    .btn-outils{position:absolute;z-index:10;background:rgba(0,0,0,.5);color:#fff;border:none;padding:8px 12px;border-radius:100px;font-size:.8rem;cursor:pointer;backdrop-filter:blur(4px);display:flex;align-items:center;gap:6px;font-family:inherit;}
+    .btn-partage{top:15px;left:15px;}
+    .btn-zoom{bottom:15px;left:15px;}
+
+    /* Galerie swipeable */
+    .galerie-container{position:relative;width:100%;height:350px;flex-shrink:0;background:var(--pierre)}
+    @media(min-width:768px){.galerie-container{height:450px;}}
     .galerie-scroll{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:100%}
     .galerie-slide{min-width:100%;height:100%;scroll-snap-align:start;display:flex;justify-content:center;align-items:center}
-    .galerie-slide img{width:100%;height:100%;object-fit:cover;}
+    .galerie-slide img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;}
     .galerie-indicateur{position:absolute;bottom:15px;right:15px;background:rgba(0,0,0,.6);color:#fff;padding:4px 10px;border-radius:100px;font-size:.75rem;letter-spacing:1px}
-    .btn-fermer{position:absolute;top:15px;right:15px;background:rgba(0,0,0,.5);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:10}
 
     .modal-infos{padding:24px;overflow-y:auto;flex:1}
-    .modal-nom{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;line-height:1.1}
-    .modal-desc{font-size:.9rem;color:var(--texte-2);margin:15px 0;line-height:1.7}
+    .modal-nom{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;line-height:1.1}
+    .modal-desc{font-size:.9rem;color:var(--texte-2);margin:15px 0;line-height:1.6}
     
     .options-titre{font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--texte-2);margin-bottom:10px}
     .options-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-    .btn-opt{border:1px solid var(--pierre);background:transparent;padding:10px 20px;border-radius:8px;font-family:inherit;font-size:.9rem;cursor:pointer}
+    .btn-opt{border:1px solid var(--pierre);background:transparent;padding:10px 16px;border-radius:8px;font-family:inherit;font-size:.9rem;cursor:pointer}
     .btn-opt.actif{background:var(--texte);color:#fff;border-color:var(--texte)}
 
-    .modal-footer{padding:20px;border-top:1px solid var(--pierre);background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .btn-ajout-panier{background:var(--nav);color:#fff;padding:15px;border:none;border-radius:12px;font-weight:600;font-size:.9rem;display:flex;justify-content:center;align-items:center;gap:8px;cursor:pointer}
-    .btn-achat-direct{background:var(--vert-wa);color:#fff;padding:15px;border:none;border-radius:12px;font-weight:600;font-size:.9rem;display:flex;justify-content:center;align-items:center;gap:8px;cursor:pointer}
+    .modal-footer{padding:15px 20px;border-top:1px solid var(--pierre);background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btn-ajout-panier{background:var(--nav);color:#fff;padding:12px;border:none;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer}
+    .btn-achat-direct{background:var(--vert-wa);color:#fff;padding:12px;border:none;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer}
     .btn-desactive{background:var(--pierre)!important;color:var(--texte-2)!important;cursor:not-allowed}
+
+    /* VISIONNEUSE PLEIN ECRAN */
+    .visionneuse{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;align-items:center;justify-content:center;flex-direction:column}
+    .visionneuse.ouverte{display:flex;animation:fadeIn 0.3s}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .img-visionneuse{max-width:100%;max-height:85vh;object-fit:contain;}
+    .btn-fermer-visionneuse{position:absolute;top:20px;right:20px;background:none;border:none;color:#fff;font-size:2rem;cursor:pointer;}
 
     /* TIROIR PANIER */
     .panier-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.5);backdrop-filter:blur(3px)}
@@ -104,13 +122,12 @@
     .panier-tiroir{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);background:#fff;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s}
     .panier-overlay.ouvert .panier-tiroir{transform:translateX(0)}
     
-    /* FOOTER PROFESSIONNEL */
+    /* FOOTER */
     footer{background:var(--nav);color:#fff;padding:60px 5% 30px;font-size:.9rem}
     .footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;max-width:1200px;margin:0 auto;margin-bottom:40px}
     .footer-col h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--or);margin-bottom:20px}
     .footer-liens{list-style:none;display:flex;flex-direction:column;gap:12px}
-    .footer-liens a{color:rgba(255,255,255,.7);text-decoration:none;transition:color .2s}
-    .footer-liens a:hover{color:var(--or)}
+    .footer-liens a{color:rgba(255,255,255,.7);text-decoration:none;}
     .footer-bas{text-align:center;padding-top:30px;border-top:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-size:.8rem}
 
     .toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%, 20px);background:var(--nav);color:#fff;padding:12px 24px;border-radius:100px;font-size:.85rem;z-index:1000;opacity:0;transition:all .3s;}
@@ -132,7 +149,7 @@
       </div>
     </nav>
     <div class="barre-recherche" id="barre-recherche">
-      <input class="input-recherche" id="input-recherche" type="text" placeholder="Rechercher (ex: Robe, Noir...)" oninput="filtrerProduits()" />
+      <input class="input-recherche" id="input-recherche" type="text" placeholder="Rechercher (ex: Montre, Noir...)" oninput="filtrerProduits()" />
     </div>
   </header>
 
@@ -140,8 +157,8 @@
   <section class="hero">
     <div class="hero-texte">
       <span class="hero-tag">Nouvelle Collection</span>
-      <h1>L'Élégance<br>Sans Compromis</h1>
-      <p class="hero-sous">Des pièces pensées pour sublimer votre quotidien. Qualité premium, design exclusif.</p>
+      <h1>L'Élégance<br>Au Quotidien</h1>
+      <p class="hero-sous">Des pièces pensées pour sublimer votre style. Qualité premium, design exclusif.</p>
       <div><a href="#catalogue" class="btn-primaire">Découvrir</a></div>
     </div>
     <div class="hero-image">
@@ -157,18 +174,20 @@
   <!-- CATALOGUE -->
   <main class="catalogue">
     <div class="grille" id="grille-produits">
-      <!-- Skeletons par défaut pendant le chargement -->
       <p style="text-align:center;grid-column:1/-1;color:gray">Chargement de la collection...</p>
     </div>
   </main>
 
-  <!-- MODAL VUE PRODUIT (ALIBABA STYLE) -->
+  <!-- MODAL VUE PRODUIT -->
   <div class="overlay" id="overlay" onclick="fermerModalSiOverlay(event)">
     <div class="modal" id="modal">
       
-      <!-- Galerie Swipeable -->
+      <!-- Galerie Swipeable avec NOUVEAUX BOUTONS -->
       <div class="galerie-container">
+        <button class="btn-outils btn-partage" onclick="partagerProduit()">🔗 Partager</button>
+        <button class="btn-outils btn-zoom" onclick="ouvrirVisionneuse()">🔍 Zoom</button>
         <button class="btn-fermer" onclick="fermerModal()">✕</button>
+        
         <div class="galerie-scroll" id="modal-galerie" onscroll="majIndicateurGalerie(this)"></div>
         <div class="galerie-indicateur" id="galerie-indicateur">1 / 1</div>
       </div>
@@ -200,6 +219,13 @@
     </div>
   </div>
 
+  <!-- VISIONNEUSE PLEIN ECRAN -->
+  <div class="visionneuse" id="visionneuse" onclick="fermerVisionneuse()">
+    <button class="btn-fermer-visionneuse" onclick="fermerVisionneuse()">✕</button>
+    <img class="img-visionneuse" id="img-visionneuse" src="" />
+    <p style="color:rgba(255,255,255,0.6);margin-top:20px;font-size:0.8rem">Appuyez pour fermer</p>
+  </div>
+
   <!-- PANIER -->
   <div class="panier-overlay" id="panier-overlay" onclick="fermerPanierSiOverlay(event)">
     <div class="panier-tiroir" id="panier-tiroir">
@@ -229,17 +255,15 @@
       <div class="footer-col">
         <h3>Liens Rapides</h3>
         <ul class="footer-liens">
-          <li><a href="#catalogue">Collection Femme</a></li>
+          <li><a href="#catalogue">Boutique</a></li>
           <li><a href="#catalogue">Nouveautés</a></li>
-          <li><a href="#catalogue">Promotions</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h3>Service Client</h3>
         <ul class="footer-liens">
-          <li><a href="#">Contactez-nous sur WhatsApp</a></li>
-          <li><a href="#">Livraison & Retours</a></li>
-          <li><a href="#">FAQ</a></li>
+          <li><a href="https://wa.me/22891183716">Contactez-nous sur WhatsApp</a></li>
+          <li><a href="#">Livraison & Paiement</a></li>
         </ul>
       </div>
     </div>
@@ -255,7 +279,7 @@
        ⚙️ CONFIGURATION & SUPABASE
     ======================================================= */
     const CONFIG = {
-      WHATSAPP_NUMERO: "70901801", 
+      WHATSAPP_NUMERO: "22870901801", 
       CLE_PANIER: "eltshop_panier"
     };
 
@@ -276,32 +300,24 @@
         if (error) throw error;
         tousProduits = data || []; produitsFiltres = tousProduits;
         construireFiltres(); afficherGrille();
+        verifierUrlPartage(); // Vérifier si on vient d'un lien partagé
       } catch (err) {
         document.getElementById('grille-produits').innerHTML = '<p>Erreur serveur.</p>';
       }
     }
 
-    /* =======================================================
-       AFFICHAGE DU CATALOGUE
-    ======================================================= */
     function afficherGrille() {
       const grille = document.getElementById('grille-produits');
       grille.innerHTML = '';
-      
       if(produitsFiltres.length === 0){
         grille.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:40px">Aucun article trouvé.</p>'; return;
       }
-
       produitsFiltres.forEach(p => {
         const enRupture = p.stock === 0;
         const enPromo = p.prix_barre && p.prix_barre > p.prix;
-        
         let badges = '';
         if(enRupture) badges += '<div class="badge-epuise">ÉPUISÉ</div>';
-        else if(enPromo) {
-          const reduc = Math.round((1 - (p.prix / p.prix_barre)) * 100);
-          badges += `<div class="badge-promo">-${reduc}%</div>`;
-        }
+        else if(enPromo) badges += `<div class="badge-promo">-${Math.round((1 - (p.prix / p.prix_barre)) * 100)}%</div>`;
 
         const el = document.createElement('article');
         el.className = 'carte';
@@ -322,9 +338,7 @@
       });
     }
 
-    /* =======================================================
-       FILTRES & RECHERCHE
-    ======================================================= */
+    /* FILTRES */
     function construireFiltres() {
       const cats = ['Tous', ...new Set(tousProduits.map(p => p.categorie))];
       document.getElementById('filtres').innerHTML = cats.map(c =>
@@ -334,53 +348,45 @@
     function appliquerFiltre(cat) { filtreActif = cat; document.querySelectorAll('.filtre-pill').forEach(b => b.classList.toggle('actif', b.textContent===cat)); filtrerProduits(); }
     function filtrerProduits() {
       const q = document.getElementById('input-recherche').value.toLowerCase();
-      produitsFiltres = tousProduits.filter(p => {
-        const matchCat = filtreActif==='Tous' || p.categorie===filtreActif;
-        const matchQ = !q || p.nom.toLowerCase().includes(q) || p.categorie.toLowerCase().includes(q);
-        return matchCat && matchQ;
-      });
+      produitsFiltres = tousProduits.filter(p => (filtreActif==='Tous' || p.categorie===filtreActif) && (!q || p.nom.toLowerCase().includes(q) || p.categorie.toLowerCase().includes(q)));
       afficherGrille();
     }
     function toggleRecherche() { const b = document.getElementById('barre-recherche'); b.classList.toggle('visible'); if (b.classList.contains('visible')) document.getElementById('input-recherche').focus(); }
 
     /* =======================================================
-       MODAL VUE PRODUIT (ALIBABA STYLE + ANALYTICS)
+       MODAL PRODUIT & PARTAGE & ZOOM
     ======================================================= */
     async function ouvrirModal(id) {
       const p = tousProduits.find(x => x.id === id);
       if (!p) return;
       produitActuel = p;
 
-      // Envoyer "+1 Vue" aux Analytics (Silencieusement)
+      // URL Partage
+      window.history.replaceState(null, null, `#produit-${id}`);
       supabaseClient.rpc('increment_stat', { p_id: id, type_stat: 'vue' }).then();
 
-      // Galerie
       const images = p.images && p.images.length > 0 ? p.images : [p.image];
       const galerie = document.getElementById('modal-galerie');
-      galerie.innerHTML = images.map(img => `<div class="galerie-slide"><img src="${img}" /></div>`).join('');
+      galerie.innerHTML = images.map(img => `<div class="galerie-slide"><img src="${img}" onclick="ouvrirVisionneuse()" /></div>`).join('');
       document.getElementById('galerie-indicateur').textContent = `1 / ${images.length}`;
-      galerie.scrollLeft = 0; // Reset scroll
+      galerie.scrollLeft = 0; 
 
-      // Infos
       document.getElementById('modal-nom').textContent = p.nom;
       document.getElementById('modal-prix').textContent = `${p.prix.toLocaleString()} ${p.devise}`;
       document.getElementById('modal-prix-barre').textContent = p.prix_barre ? `${p.prix_barre.toLocaleString()} ${p.devise}` : '';
       document.getElementById('modal-desc').innerHTML = p.description ? p.description.replace(/\n/g, '<br>') : '';
 
-      // Options
-      document.getElementById('modal-tailles').innerHTML = (p.tailles||[]).map(t => `<button class="btn-opt" onclick="selOpt(this)">${t}</button>`).join('');
-      document.getElementById('modal-couleurs').innerHTML = (p.couleurs||[]).map(c => `<button class="btn-opt" onclick="selOpt(this)">${c}</button>`).join('');
+      document.getElementById('modal-tailles').innerHTML = (p.tailles||[]).length ? p.tailles.map(t => `<button class="btn-opt" onclick="selOpt(this)">${t}</button>`).join('') : '<span style="color:gray;font-size:0.8rem">Taille unique</span>';
+      document.getElementById('modal-couleurs').innerHTML = (p.couleurs||[]).length ? p.couleurs.map(c => `<button class="btn-opt" onclick="selOpt(this)">${c}</button>`).join('') : '<span style="color:gray;font-size:0.8rem">Couleur unique</span>';
 
-      // Gestion Stock
       const enRupture = p.stock === 0;
-      const btnPanier = document.getElementById('btn-panier');
-      const btnDirect = document.getElementById('btn-direct');
+      const btnPanier = document.getElementById('btn-panier'), btnDirect = document.getElementById('btn-direct');
       if(enRupture){
-        btnPanier.classList.add('btn-desactive'); btnPanier.textContent = "Épuisé"; btnPanier.disabled = true;
-        btnDirect.classList.add('btn-desactive'); btnDirect.textContent = "Indisponible"; btnDirect.disabled = true;
+        btnPanier.className = 'btn-ajout-panier btn-desactive'; btnPanier.textContent = "Épuisé"; btnPanier.disabled = true;
+        btnDirect.className = 'btn-achat-direct btn-desactive'; btnDirect.textContent = "Indisponible"; btnDirect.disabled = true;
       } else {
-        btnPanier.classList.remove('btn-desactive'); btnPanier.textContent = "🛒 Ajouter"; btnPanier.disabled = false;
-        btnDirect.classList.remove('btn-desactive'); btnDirect.textContent = "Commander"; btnDirect.disabled = false;
+        btnPanier.className = 'btn-ajout-panier'; btnPanier.textContent = "🛒 Ajouter"; btnPanier.disabled = false;
+        btnDirect.className = 'btn-achat-direct'; btnDirect.textContent = "Commander"; btnDirect.disabled = false;
       }
 
       document.getElementById('overlay').classList.add('ouverte');
@@ -388,40 +394,60 @@
       activerSwipeModal();
     }
 
-    function selOpt(btn) { btn.parentElement.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('actif')); btn.classList.add('actif'); }
-    function majIndicateurGalerie(el) {
-      const idx = Math.round(el.scrollLeft / el.clientWidth) + 1;
-      const total = el.children.length;
-      document.getElementById('galerie-indicateur').textContent = `${idx} / ${total}`;
+    function fermerModal() { 
+      document.getElementById('overlay').classList.remove('ouverte'); 
+      document.body.classList.remove('modal-ouverte'); 
+      produitActuel = null; 
+      window.history.replaceState(null, null, ' '); // Nettoie l'URL
     }
-
-    function fermerModal() { document.getElementById('overlay').classList.remove('ouverte'); document.body.classList.remove('modal-ouverte'); produitActuel = null; }
     function fermerModalSiOverlay(e) { if (e.target === document.getElementById('overlay')) fermerModal(); }
 
-    /* =======================================================
-       PANIER
-    ======================================================= */
-    function mettreAJourBadge() {
-      const badge = document.getElementById('badge-panier'); badge.textContent = panier.length;
-      if(panier.length > 0) badge.classList.add('visible'); else badge.classList.remove('visible');
+    function selOpt(btn) { btn.parentElement.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('actif')); btn.classList.add('actif'); }
+    function majIndicateurGalerie(el) { document.getElementById('galerie-indicateur').textContent = `${Math.round(el.scrollLeft / el.clientWidth) + 1} / ${el.children.length}`; }
+
+    /* FONCTIONNALITÉS EXTRAS (PARTAGE ET ZOOM) */
+    function partagerProduit() {
+      if (!produitActuel) return;
+      const url = window.location.href.split('#')[0] + `#produit-${produitActuel.id}`;
+      if (navigator.share) {
+        navigator.share({ title: produitActuel.nom, text: `Découvrez ${produitActuel.nom} sur ELTShop !`, url: url }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(url); afficherToast("🔗 Lien copié !");
+      }
     }
 
-    function validerChoix() {
-      const t = document.querySelector('#modal-tailles .actif');
-      const c = document.querySelector('#modal-couleurs .actif');
-      if((produitActuel.tailles?.length > 0 && !t) || (produitActuel.couleurs?.length > 0 && !c)) {
-        afficherToast("⚠️ Veuillez choisir taille et couleur"); return null;
+    function verifierUrlPartage() {
+      if(window.location.hash.startsWith('#produit-')) {
+        const id = parseInt(window.location.hash.replace('#produit-', ''));
+        if(id) setTimeout(() => ouvrirModal(id), 500);
       }
+    }
+
+    function ouvrirVisionneuse() {
+      if(!produitActuel) return;
+      const galerie = document.getElementById('modal-galerie');
+      const idx = Math.round(galerie.scrollLeft / galerie.clientWidth);
+      const images = produitActuel.images && produitActuel.images.length > 0 ? produitActuel.images : [produitActuel.image];
+      document.getElementById('img-visionneuse').src = images[idx];
+      document.getElementById('visionneuse').classList.add('ouverte');
+    }
+    function fermerVisionneuse() { document.getElementById('visionneuse').classList.remove('ouverte'); }
+
+    /* =======================================================
+       PANIER & WHATSAPP
+    ======================================================= */
+    function mettreAJourBadge() { const b = document.getElementById('badge-panier'); b.textContent = panier.length; if(panier.length>0) b.classList.add('visible'); else b.classList.remove('visible'); }
+    function validerChoix() {
+      const t = document.querySelector('#modal-tailles .actif'); const c = document.querySelector('#modal-couleurs .actif');
+      if((produitActuel.tailles?.length > 0 && !t) || (produitActuel.couleurs?.length > 0 && !c)) { afficherToast("⚠️ Veuillez choisir taille et couleur"); return null; }
       return { taille: t ? t.textContent : '-', couleur: c ? c.textContent : '-' };
     }
 
     function ajouterAuPanier() {
       const choix = validerChoix(); if(!choix) return;
       panier.push({ uid: Date.now(), id: produitActuel.id, nom: produitActuel.nom, prix: produitActuel.prix, devise: produitActuel.devise, taille: choix.taille, couleur: choix.couleur, image: produitActuel.images?.[0] || produitActuel.image });
-      localStorage.setItem(CONFIG.CLE_PANIER, JSON.stringify(panier));
-      mettreAJourBadge(); afficherToast(`✓ Ajouté au panier`); fermerModal();
+      localStorage.setItem(CONFIG.CLE_PANIER, JSON.stringify(panier)); mettreAJourBadge(); afficherToast(`✅ Ajouté au panier`); fermerModal();
     }
-
     function retirerDuPanier(uid) { panier = panier.filter(i => i.uid !== uid); localStorage.setItem(CONFIG.CLE_PANIER, JSON.stringify(panier)); rendrePanier(); }
     
     function ouvrirPanier() { rendrePanier(); document.getElementById('panier-overlay').classList.add('ouvert'); document.body.classList.add('modal-ouverte'); activerSwipePanier(); }
@@ -429,52 +455,33 @@
     function fermerPanierSiOverlay(e) { if (e.target === document.getElementById('panier-overlay')) fermerPanier(); }
 
     function rendrePanier() {
-      mettreAJourBadge();
-      const liste = document.getElementById('panier-liste');
+      mettreAJourBadge(); const liste = document.getElementById('panier-liste');
       if (panier.length === 0) { liste.innerHTML = '<p style="text-align:center;color:gray">Panier vide</p>'; document.getElementById('panier-bas').style.display = 'none'; return; }
-      
       document.getElementById('panier-bas').style.display = 'block';
       liste.innerHTML = panier.map(item => `
         <div style="display:flex;gap:15px;align-items:center;background:#f9f9f9;padding:10px;border-radius:12px">
           <img src="${item.image}" style="width:70px;height:70px;object-fit:cover;border-radius:8px" />
-          <div style="flex:1">
-            <div style="font-weight:600">${item.nom}</div>
-            <div style="font-size:.8rem;color:gray">${item.taille} | ${item.couleur}</div>
-            <div style="color:var(--or);font-weight:700">${item.prix.toLocaleString()} ${item.devise}</div>
-          </div>
+          <div style="flex:1"><div style="font-weight:600">${item.nom}</div><div style="font-size:.8rem;color:gray">${item.taille} | ${item.couleur}</div><div style="color:var(--or);font-weight:700">${item.prix.toLocaleString()} ${item.devise}</div></div>
           <button onclick="retirerDuPanier(${item.uid})" style="border:none;background:none;color:red;font-size:1.2rem">✕</button>
-        </div>
-      `).join('');
+        </div>`).join('');
       document.getElementById('panier-total').textContent = `${panier.reduce((s, i) => s + i.prix, 0).toLocaleString()} ${panier[0].devise}`;
     }
 
-    /* =======================================================
-       WHATSAPP & ANALYTICS CLICS
-    ======================================================= */
     function commanderDirectWA() {
       const choix = validerChoix(); if(!choix) return;
       supabaseClient.rpc('increment_stat', { p_id: produitActuel.id, type_stat: 'clic' }).then();
-      
-      const msg = `Bonjour ELTShop ! 👋\nJe veux commander :\n\n🏷️ *${produitActuel.nom}*\n💰 ${produitActuel.prix.toLocaleString()} ${produitActuel.devise}\n📐 Taille : ${choix.taille}\n🎨 Couleur : ${choix.couleur}`;
-      window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
+      window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMERO}?text=${encodeURIComponent(`Bonjour ELTShop ! 👋\nJe veux commander :\n\n🏷️ *${produitActuel.nom}*\n💰 ${produitActuel.prix.toLocaleString()} ${produitActuel.devise}\n📐 Taille : ${choix.taille}\n🎨 Couleur : ${choix.couleur}`)}`, '_blank');
       fermerModal();
     }
-
     function commanderPanierWA() {
       if(panier.length === 0) return;
       panier.forEach(item => supabaseClient.rpc('increment_stat', { p_id: item.id, type_stat: 'clic' }).then());
-      
       const lignes = panier.map((item, i) => `${i+1}. *${item.nom}* (${item.taille}/${item.couleur}) - ${item.prix.toLocaleString()}`).join('\n');
-      const total = panier.reduce((s, i) => s + i.prix, 0);
-      const msg = `Bonjour ELTShop ! 👋\nMa commande :\n\n${lignes}\n\n💰 *Total : ${total.toLocaleString()} ${panier[0].devise}*`;
-      
-      window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
+      window.open(`https://wa.me/${CONFIG.WHATSAPP_NUMERO}?text=${encodeURIComponent(`Bonjour ELTShop ! 👋\nMa commande :\n\n${lignes}\n\n💰 *Total : ${panier.reduce((s, i) => s + i.prix, 0).toLocaleString()} ${panier[0].devise}*`)}`, '_blank');
       panier = []; localStorage.setItem(CONFIG.CLE_PANIER, JSON.stringify(panier)); fermerPanier();
     }
 
-    /* =======================================================
-       GESTION TACTILE (Swipe)
-    ======================================================= */
+    /* GESTION TACTILE */
     function activerSwipeModal() {
       const modal = document.getElementById('modal'); let startY = 0;
       modal.ontouchstart = e => startY = e.touches[0].clientY;
@@ -485,13 +492,8 @@
       tiroir.ontouchstart = e => startX = e.touches[0].clientX;
       tiroir.ontouchend = e => { if (e.changedTouches[0].clientX - startX > 60) fermerPanier(); };
     }
+    function afficherToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('visible'); setTimeout(() => t.classList.remove('visible'), 3000); }
 
-    function afficherToast(msg) {
-      const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('visible');
-      setTimeout(() => t.classList.remove('visible'), 3000);
-    }
-
-    /* Démarrage */
     mettreAJourBadge(); chargerProduits();
   </script>
 </body>
