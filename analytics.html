@@ -96,16 +96,17 @@
   <script>
     /* =====================================================
        INITIALISATION SUPABASE
-       !! REMPLACE PAR TES CLES !!
+       !! REMPLACE CES CLES PAR LES TIENNES !!
     ===================================================== */
     const supabaseUrl = 'https://ptjqyahqfxiycuulvelj.supabase.co';
     const supabaseKey = 'sb_publishable_o5tQyfF9ma5hCTLXyBrdDw_gQB9OShu';
     const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     /* =====================================================
-       AUTH
+       AUTH INTELLIGENTE (Ne déconnecte plus au rafraîchissement)
     ===================================================== */
-    supabaseClient.auth.onAuthStateChange((event, session) => {
+    async function verifierSession() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) {
         document.getElementById('acces-page').style.display = 'none';
         document.getElementById('dashboard-page').classList.add('visible');
@@ -114,6 +115,14 @@
         document.getElementById('acces-page').style.display = 'flex';
         document.getElementById('dashboard-page').classList.remove('visible');
       }
+    }
+
+    // On lance la vérification au démarrage
+    verifierSession();
+
+    // On surveille les connexions/déconnexions manuelles
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') verifierSession();
     });
 
     async function seConnecter() {
@@ -134,15 +143,12 @@
        CHARGEMENT DES STATS
     ===================================================== */
     async function chargerAnalytics() {
-      // 1. Récupérer les produits
       const { data: produits } = await supabaseClient.from('products').select('id, nom, image');
       if(!produits) return;
 
-      // 2. Récupérer les stats
       const { data: stats } = await supabaseClient.from('analytics').select('*');
       if(!stats) return;
 
-      // 3. Fusionner les données (Calculer les totaux par produit)
       let totVues = 0, totClics = 0;
       let classement = produits.map(p => {
         let vuesProd = 0, clicsProd = 0;
@@ -153,13 +159,11 @@
         return { ...p, vues: vuesProd, clics: clicsProd };
       });
 
-      // 4. Mettre à jour les compteurs en haut
       document.getElementById('tot-vues').textContent = totVues.toLocaleString();
       document.getElementById('tot-clics').textContent = totClics.toLocaleString();
       document.getElementById('tot-conv').textContent = totVues > 0 ? Math.round((totClics/totVues)*100) + '%' : '0%';
       document.getElementById('tot-prods').textContent = produits.length;
 
-      // 5. Afficher le classement (Trier par nombre de vues)
       classement.sort((a, b) => b.vues - a.vues);
       
       const conteneur = document.getElementById('liste-populaires');
