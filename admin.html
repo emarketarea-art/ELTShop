@@ -433,7 +433,15 @@ table { min-width: 600px; /* Force le défilement au lieu d'écraser le texte */
     /* =====================================================
        SAUVEGARDE DB
     ===================================================== */
-    async function sauvegarderProduit() {
+   async function sauvegarderProduit() {
+      // 1. On récupère le texte tapé même si tu as oublié de faire "Entrée"
+      const tInput = document.getElementById('tailles-input').value.trim().replace(/,$/, '');
+      if (tInput && !taillesEnCours.includes(tInput)) taillesEnCours.push(tInput);
+
+      const cInput = document.getElementById('couleurs-input').value.trim().replace(/,$/, '');
+      if (cInput && !couleursEnCours.includes(cInput)) couleursEnCours.push(cInput);
+
+      // 2. On vérifie les champs obligatoires
       const nom = document.getElementById('f-nom').value.trim();
       const cat = document.getElementById('f-cat').value.trim();
       const prix = parseFloat(document.getElementById('f-prix').value);
