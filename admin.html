@@ -438,14 +438,24 @@ table { min-width: 600px; /* Force le défilement au lieu d'écraser le texte */
        SAUVEGARDE DB
     ===================================================== */
    async function sauvegarderProduit() {
-      // 1. On récupère le texte tapé même si tu as oublié de faire "Entrée"
-      const tInput = document.getElementById('tailles-input').value.trim().replace(/,$/, '');
-      if (tInput && !taillesEnCours.includes(tInput)) taillesEnCours.push(tInput);
+      // 1. Découpage automatique si tu as tapé des virgules (ex: "S, M, L") sans faire "Entrée"
+      const tInput = document.getElementById('tailles-input').value;
+      if (tInput) {
+        tInput.split(',').forEach(val => {
+          const cleanVal = val.trim();
+          if (cleanVal && !taillesEnCours.includes(cleanVal)) taillesEnCours.push(cleanVal);
+        });
+      }
 
-      const cInput = document.getElementById('couleurs-input').value.trim().replace(/,$/, '');
-      if (cInput && !couleursEnCours.includes(cInput)) couleursEnCours.push(cInput);
+      const cInput = document.getElementById('couleurs-input').value;
+      if (cInput) {
+        cInput.split(',').forEach(val => {
+          const cleanVal = val.trim();
+          if (cleanVal && !couleursEnCours.includes(cleanVal)) couleursEnCours.push(cleanVal);
+        });
+      }
 
-      // 2. On vérifie les champs obligatoires
+      // 2. Vérification des champs obligatoires
       const nom = document.getElementById('f-nom').value.trim();
       const cat = document.getElementById('f-cat').value.trim();
       const prix = parseFloat(document.getElementById('f-prix').value);
@@ -457,6 +467,7 @@ table { min-width: 600px; /* Force le défilement au lieu d'écraser le texte */
       }
 
       document.getElementById('btn-sauver').disabled = true;
+      document.getElementById('btn-sauver').textContent = "Enregistrement...";
 
       const dataProd = {
         nom, categorie: cat, prix, prix_barre, stock,
@@ -475,6 +486,7 @@ table { min-width: 600px; /* Force le défilement au lieu d'écraser le texte */
       }
 
       document.getElementById('btn-sauver').disabled = false;
+      document.getElementById('btn-sauver').textContent = "💾 Sauvegarder";
       fermerFormulaire();
       chargerDonnees();
     }
