@@ -275,7 +275,11 @@ table { min-width: 600px; /* Force le défilement au lieu d'écraser le texte */
         <tr>
           <td class="td-image"><img src="${p.image}" onerror="this.src=''" /></td>
           <td><b>${escapeHTML(p.nom)}</b><br><span style="font-size:0.75rem;color:gray">${p.id}</span></td>
-          <td>${escapeHTML(p.categorie)}</td>
+          <td>
+  ${escapeHTML(p.categorie)}<br>
+  <span style="font-size:0.7rem;color:gray">${(p.tailles||[]).join(', ')}</span><br>
+  <span style="font-size:0.7rem;color:gray">${(p.couleurs||[]).join(', ')}</span>
+</td>
           <td>
             ${p.prix.toLocaleString()} ${escapeHTML(p.devise)}
             ${p.prix_barre ? `<br><s style="color:red;font-size:0.8rem">${p.prix_barre.toLocaleString()}</s>` : ''}
