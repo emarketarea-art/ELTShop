@@ -77,6 +77,11 @@
     /* MODAL PRODUIT (CORRECTION PC / MOBILE) */
     .overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);align-items:flex-end;}
     .overlay.ouverte{display:flex}
+    /* FLÈCHES DE NAVIGATION GALERIE */
+    .btn-nav-galerie{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.8);border:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:background .2s}
+    .btn-nav-galerie:hover{background:#fff}
+    .btn-nav-galerie svg{width:18px;height:18px;stroke:var(--texte);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+    .btn-prev{left:10px} .btn-next{right:10px}
     
     .modal{width:100%;max-width:500px;margin:0 auto;background:#fff;border-radius:24px 24px 0 0;max-height:92vh;display:flex;flex-direction:column;animation:slideUp .3s;position:relative;}
     
@@ -206,6 +211,11 @@
         <button class="btn-fermer" onclick="fermerModal()">✕</button>
         
         <div class="galerie-scroll" id="modal-galerie" onscroll="majIndicateurGalerie(this)"></div>
+         <!-- NOUVELLES FLÈCHES ICI -->
+        <button class="btn-nav-galerie btn-prev" id="btn-prev" onclick="naviguerGalerie(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="btn-nav-galerie btn-next" id="btn-next" onclick="naviguerGalerie(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+
+        
         <div class="galerie-indicateur" id="galerie-indicateur">1 / 1</div>
       </div>
 
@@ -415,6 +425,9 @@
       galerie.innerHTML = images.map(img => `<div class="galerie-slide"><img src="${img}" onclick="ouvrirVisionneuse()" /></div>`).join('');
       document.getElementById('galerie-indicateur').textContent = `1 / ${images.length}`;
       galerie.scrollLeft = 0; 
+      // Afficher les flèches uniquement si plusieurs images
+      document.getElementById('btn-prev').style.display = images.length > 1 ? 'flex' : 'none';
+      document.getElementById('btn-next').style.display = images.length > 1 ? 'flex' : 'none';
 
       document.getElementById('modal-nom').textContent = p.nom;
       document.getElementById('modal-prix').textContent = `${p.prix.toLocaleString()} ${p.devise}`;
@@ -450,6 +463,12 @@
     function selOpt(btn) { btn.parentElement.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('actif')); btn.classList.add('actif'); }
     function majIndicateurGalerie(el) { document.getElementById('galerie-indicateur').textContent = `${Math.round(el.scrollLeft / el.clientWidth) + 1} / ${el.children.length}`; }
 
+    /* NAVIGATION FLÈCHES GALERIE */
+    function naviguerGalerie(direction) {
+      const galerie = document.getElementById('modal-galerie');
+      galerie.scrollBy({ left: direction * galerie.clientWidth, behavior: 'smooth' });
+    }
+    
     function partagerProduit() {
       if (!produitActuel) return;
       const url = window.location.href.split('#')[0] + `#produit-${produitActuel.id}`;
