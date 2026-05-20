@@ -378,7 +378,7 @@
               <span class="prix-actuel">${p.prix.toLocaleString()} ${p.devise}</span>
               ${enPromo ? `<span class="prix-barre">${p.prix_barre.toLocaleString()}</span>` : ''}
             </div>
-            <button class="btn-voir" onclick="ouvrirModal(${p.id})">${enRupture ? 'Voir détails' : 'Commander'}</button>
+            <button class="btn-voir" onclick="ouvrirModal(${p.id})">Voir détails</button>
           </div>`;
         grille.appendChild(el);
       });
