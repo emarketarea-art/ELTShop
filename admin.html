@@ -236,7 +236,9 @@ table { min-width: 600px; /* Force le défilement au lieu d'écraser le texte */
       return str.replace(/[&<>'"]/g, tag => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[tag] || tag));
     }
 
-    supabaseClient.auth.onAuthStateChange((event, session) => {
+    /* VÉRIFICATION DE SESSION INTELLIGENTE */
+    async function verifierSession() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) {
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('admin-page').classList.add('visible');
@@ -245,6 +247,12 @@ table { min-width: 600px; /* Force le défilement au lieu d'écraser le texte */
         document.getElementById('login-page').style.display = 'flex';
         document.getElementById('admin-page').classList.remove('visible');
       }
+    }
+
+    verifierSession();
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') verifierSession();
     });
 
     async function seConnecter() {
