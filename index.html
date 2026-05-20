@@ -74,12 +74,11 @@
     .prix-barre{font-size:.8rem;color:var(--texte-2);text-decoration:line-through;margin-left:8px}
     .btn-voir{width:100%;padding:10px;background:var(--texte);color:#fff;border:none;border-radius:8px;margin-top:12px;cursor:pointer;font-weight:600;text-transform:uppercase;font-size:.75rem}
 
-    /* MODAL PRODUIT */
+    /* MODAL PRODUIT (CORRECTION PC / MOBILE) */
     .overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);align-items:flex-end;}
     .overlay.ouverte{display:flex}
     
     .modal{width:100%;max-width:500px;margin:0 auto;background:#fff;border-radius:24px 24px 0 0;max-height:92vh;display:flex;flex-direction:column;animation:slideUp .3s;position:relative;}
-    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
     
     /* Boutons Partage & Zoom & Fermer */
     .btn-fermer{position:absolute;top:15px;right:15px;background:rgba(0,0,0,.5);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:10;backdrop-filter:blur(4px)}
@@ -87,14 +86,13 @@
     .btn-partage{top:15px;left:15px;}
     .btn-zoom{bottom:15px;left:15px;}
 
-    /* Galerie swipeable */
     .galerie-container{position:relative;width:100%;height:350px;flex-shrink:0;background:var(--pierre)}
-    @media(min-width:768px){.galerie-container{height:450px;}}
     .galerie-scroll{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:100%}
     .galerie-slide{min-width:100%;height:100%;scroll-snap-align:start;display:flex;justify-content:center;align-items:center}
     .galerie-slide img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;}
     .galerie-indicateur{position:absolute;bottom:15px;right:15px;background:rgba(0,0,0,.6);color:#fff;padding:4px 10px;border-radius:100px;font-size:.75rem;letter-spacing:1px}
 
+    .modal-colonne-droite{display:flex;flex-direction:column;flex:1;overflow:hidden;}
     .modal-infos{padding:24px;overflow-y:auto;flex:1}
     .modal-nom{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;line-height:1.1}
     .modal-desc{font-size:.9rem;color:var(--texte-2);margin:15px 0;line-height:1.6}
@@ -108,6 +106,25 @@
     .btn-ajout-panier{background:var(--nav);color:#fff;padding:12px;border:none;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer}
     .btn-achat-direct{background:var(--vert-wa);color:#fff;padding:12px;border:none;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer}
     .btn-desactive{background:var(--pierre)!important;color:var(--texte-2)!important;cursor:not-allowed}
+
+    /* SPECIFIQUE DESKTOP (PC) -> Affichage 2 colonnes */
+    @media(min-width: 768px) {
+      .overlay.ouverte{align-items:center;}
+      .modal {
+        flex-direction: row; /* Met l'image à gauche, le texte à droite */
+        max-width: 850px;
+        height: 70vh; /* Hauteur fixe pour PC */
+        border-radius: 20px;
+      }
+      .galerie-container {
+        width: 45%; /* L'image prend 45% de l'écran */
+        height: 100%;
+      }
+      .modal-colonne-droite {
+        width: 55%; /* Le texte prend 55% */
+        height: 100%;
+      }
+    }
 
     /* VISIONNEUSE PLEIN ECRAN */
     .visionneuse{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;align-items:center;justify-content:center;flex-direction:column}
@@ -182,7 +199,7 @@
   <div class="overlay" id="overlay" onclick="fermerModalSiOverlay(event)">
     <div class="modal" id="modal">
       
-      <!-- Galerie Swipeable avec NOUVEAUX BOUTONS -->
+      <!-- Galerie Swipeable -->
       <div class="galerie-container">
         <button class="btn-outils btn-partage" onclick="partagerProduit()">🔗 Partager</button>
         <button class="btn-outils btn-zoom" onclick="ouvrirVisionneuse()">🔍 Zoom</button>
@@ -192,28 +209,31 @@
         <div class="galerie-indicateur" id="galerie-indicateur">1 / 1</div>
       </div>
 
-      <!-- Infos -->
-      <div class="modal-infos">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <h2 class="modal-nom" id="modal-nom"></h2>
-          <div style="text-align:right">
-            <div class="prix-actuel" id="modal-prix"></div>
-            <div class="prix-barre" id="modal-prix-barre"></div>
+      <!-- Colonne Droite (Pour PC) -->
+      <div class="modal-colonne-droite">
+        <!-- Infos -->
+        <div class="modal-infos">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <h2 class="modal-nom" id="modal-nom"></h2>
+            <div style="text-align:right">
+              <div class="prix-actuel" id="modal-prix"></div>
+              <div class="prix-barre" id="modal-prix-barre"></div>
+            </div>
           </div>
+          <p class="modal-desc" id="modal-desc"></p>
+          
+          <div class="options-titre">Choisir une taille</div>
+          <div class="options-grid" id="modal-tailles"></div>
+          
+          <div class="options-titre" style="margin-top:10px">Choisir une couleur</div>
+          <div class="options-grid" id="modal-couleurs"></div>
         </div>
-        <p class="modal-desc" id="modal-desc"></p>
-        
-        <div class="options-titre">Choisir une taille</div>
-        <div class="options-grid" id="modal-tailles"></div>
-        
-        <div class="options-titre" style="margin-top:10px">Choisir une couleur</div>
-        <div class="options-grid" id="modal-couleurs"></div>
-      </div>
 
-      <!-- Footer Actions -->
-      <div class="modal-footer">
-        <button class="btn-ajout-panier" id="btn-panier" onclick="ajouterAuPanier()">🛒 Ajouter</button>
-        <button class="btn-achat-direct" id="btn-direct" onclick="commanderDirectWA()">Commander</button>
+        <!-- Footer Actions -->
+        <div class="modal-footer">
+          <button class="btn-ajout-panier" id="btn-panier" onclick="ajouterAuPanier()">🛒 Ajouter</button>
+          <button class="btn-achat-direct" id="btn-direct" onclick="commanderDirectWA()">Commander</button>
+        </div>
       </div>
 
     </div>
@@ -276,6 +296,15 @@
 
   <script>
     /* =======================================================
+       TUEUR DE SERVICE WORKER (Règle le bug des "0 produits" sur mobile)
+    ======================================================= */
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) { registration.unregister(); }
+      });
+    }
+
+    /* =======================================================
        ⚙️ CONFIGURATION & SUPABASE
     ======================================================= */
     const CONFIG = {
@@ -292,7 +321,7 @@
     let panier = JSON.parse(localStorage.getItem(CONFIG.CLE_PANIER)) || [];
 
     /* =======================================================
-       FONCTION DE MÉLANGE (Fisher-Yates)
+       CHARGEMENT DES PRODUITS (Mélange Aléatoire Intelligent)
     ======================================================= */
     function melangerTableau(tableau) {
       for (let i = tableau.length - 1; i > 0; i--) {
@@ -302,28 +331,21 @@
       return tableau;
     }
 
-    /* =======================================================
-       CHARGEMENT DES PRODUITS (Mélange intelligent)
-    ======================================================= */
     async function chargerProduits() {
       try {
         const { data, error } = await supabaseClient.from('products').select('*');
         if (error) throw error;
         
-        // On sépare les articles en stock et ceux en rupture
         let enStock = data.filter(p => p.stock > 0);
         let epuises = data.filter(p => p.stock === 0);
 
-        // On mélange aléatoirement chaque groupe
         enStock = melangerTableau(enStock);
         epuises = melangerTableau(epuises);
 
-        // On rassemble (Les articles en stock en haut, les épuisés en bas)
         tousProduits = [...enStock, ...epuises];
         produitsFiltres = tousProduits;
         
-        construireFiltres(); 
-        afficherGrille();
+        construireFiltres(); afficherGrille();
         verifierUrlPartage(); 
       } catch (err) {
         document.getElementById('grille-produits').innerHTML = '<p>Erreur serveur.</p>';
@@ -385,7 +407,6 @@
       if (!p) return;
       produitActuel = p;
 
-      // URL Partage
       window.history.replaceState(null, null, `#produit-${id}`);
       supabaseClient.rpc('increment_stat', { p_id: id, type_stat: 'vue' }).then();
 
@@ -400,8 +421,8 @@
       document.getElementById('modal-prix-barre').textContent = p.prix_barre ? `${p.prix_barre.toLocaleString()} ${p.devise}` : '';
       document.getElementById('modal-desc').innerHTML = p.description ? p.description.replace(/\n/g, '<br>') : '';
 
-      document.getElementById('modal-tailles').innerHTML = (p.tailles||[]).length ? p.tailles.map(t => `<button class="btn-opt" onclick="selOpt(this)">${t}</button>`).join('') : '<span style="color:gray;font-size:0.8rem">Taille unique</span>';
-      document.getElementById('modal-couleurs').innerHTML = (p.couleurs||[]).length ? p.couleurs.map(c => `<button class="btn-opt" onclick="selOpt(this)">${c}</button>`).join('') : '<span style="color:gray;font-size:0.8rem">Couleur unique</span>';
+      document.getElementById('modal-tailles').innerHTML = (p.tailles||[]).length ? p.tailles.map((t, i) => `<button class="btn-opt ${i===0 ? 'actif' : ''}" onclick="selOpt(this)">${t}</button>`).join('') : '<span style="color:gray;font-size:0.8rem">Taille unique</span>';
+      document.getElementById('modal-couleurs').innerHTML = (p.couleurs||[]).length ? p.couleurs.map((c, i) => `<button class="btn-opt ${i===0 ? 'actif' : ''}" onclick="selOpt(this)">${c}</button>`).join('') : '<span style="color:gray;font-size:0.8rem">Couleur unique</span>';
 
       const enRupture = p.stock === 0;
       const btnPanier = document.getElementById('btn-panier'), btnDirect = document.getElementById('btn-direct');
@@ -422,14 +443,13 @@
       document.getElementById('overlay').classList.remove('ouverte'); 
       document.body.classList.remove('modal-ouverte'); 
       produitActuel = null; 
-      window.history.replaceState(null, null, ' '); // Nettoie l'URL
+      window.history.replaceState(null, null, ' '); 
     }
     function fermerModalSiOverlay(e) { if (e.target === document.getElementById('overlay')) fermerModal(); }
 
     function selOpt(btn) { btn.parentElement.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('actif')); btn.classList.add('actif'); }
     function majIndicateurGalerie(el) { document.getElementById('galerie-indicateur').textContent = `${Math.round(el.scrollLeft / el.clientWidth) + 1} / ${el.children.length}`; }
 
-    /* FONCTIONNALITÉS EXTRAS (PARTAGE ET ZOOM) */
     function partagerProduit() {
       if (!produitActuel) return;
       const url = window.location.href.split('#')[0] + `#produit-${produitActuel.id}`;
